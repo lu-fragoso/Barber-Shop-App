@@ -1,9 +1,22 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
+import { useNavigation } from '@react-navigation/native';
 
+import HomeClient from "../client/HomeClient";
+import HomeBarber from '../barber/HomeBarber'
 
-export default Login = () => {
- return (
+export default Login = ({navigation}) => {
+ 
+//  const navigation = useNavigation();
+//
+//  const navigateToClient = () => {
+//      navigation.navigate('NavigatorClient'); 
+//  };
+//  const navigateToBarber = () => {
+//      navigation.navigate('NavigatorBaber'); 
+//  }; 
+ 
+  return (
   
     <View style={styles.tela}>
       <View style={styles.div}>
@@ -26,13 +39,24 @@ export default Login = () => {
         </View>
 
         <View style={{ ...styles.button, left: 64, top: 540 }}>
-          <Text style={{ ...styles.loginText, left: 68, top: 5.12, fontSize: 36, }}>Login</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('HomeClient')}
+            > 
+            <Text style={{ ...styles.loginText, left: 68, top: 5.12, fontSize: 36, }}>Login</Text>
+          </TouchableOpacity> 
         </View>
 
         <View style={{ ...styles.button, width: 104, height: 45, left: 232, top: 647 }}>
-        <Text style={{ ...styles.loginText, left: 13, top: 10, fontSize: 20, }}>Register</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('HomeBarber')}
+            >  
+            <Text style={{ ...styles.loginText, left: 13, top: 10, fontSize: 20, }}>Register</Text>
+          </TouchableOpacity>
         </View>
       </View>
+      
     </View>
    
   );
