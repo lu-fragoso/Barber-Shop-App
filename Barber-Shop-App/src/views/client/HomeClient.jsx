@@ -1,40 +1,53 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 export default HomeClient = () => {
+  const navigation = useNavigation();
+
+  const handleVoltar = () => {
+    navigation.goBack(); 
+  };
+ 
   return (
+    
     <View style={styles.container}>
       
       <View style={styles.rectangle}/>
-      <View style={styles.group}>
+      <View style={styles.group4}>
         <View style={styles.rectangle2}/>
         <Text style={styles.scheduleText}>Schedule your appointment !</Text>
       </View>
-      <View style={styles.group}>
+      <View style={styles.group11}>
         <Text style={styles.welcome}>Welcome,</Text>
         <Text style={styles.client}>Client!</Text>
       </View>
-      <View style={styles.group}>
+      <View style={styles.group13}>
         <View style={styles.ellipse}/>
         <Image style={styles.image} source={require('../images/Bigode.png')} />
         <Text style={styles.beard}>Beard</Text>
         <Text style={styles.shaving}>Shaving</Text>
       </View>
-      <View style={styles.group}>
+      <View style={styles.group12}>
         <Image style={styles.image2} source={require('../images/Tesoura.png')} />
         <View style={styles.ellipse}/>
         <Text style={styles.hair}>Hair</Text>
         <Text style={styles.cutting}>Cutting</Text>
       </View>
-      <View style={styles.group}>
+      <View style={styles.group14}>
         <Image style={styles.image3} source={require('../images/Xampu.png')} />
         <View style={styles.ellipse}/>
         <Text style={styles.hair}>Hair</Text>
         <Text style={styles.treatment}>Treatment</Text>
       </View>
       <Text style={styles.allServices}>All services</Text>
-      <View style={styles.vector1}/>
-      <View style={styles.vector2}/>
+     
+      <Icon name="bars" size={40} color='#F2DDB6' style={{...styles.vector2}} />
+    
+      <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
+        <Icon name="chevron-right" size={40} color='#F2DDB6'  />
+      </TouchableOpacity>
     
     </View>
   );
@@ -45,6 +58,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#262626',
     alignItems: 'center',
+    flexDirection: "row",
     justifyContent: 'center',
   },
   rectangle: {
@@ -58,6 +72,41 @@ const styles = StyleSheet.create({
   group: {
     width: 219,
     height: 70,
+    position: 'absolute',
+  },
+  group4: {
+    width: 219,
+    height: 70,
+    left: 71,
+    top: 690,
+    position: 'absolute',
+  },
+  group13: {
+    width: 105,
+    height: 158,
+    left: 202,
+    top: 281,
+    position: 'absolute',
+  },
+  group14: {
+    width: 106,
+    height: 158,
+    left: 50,
+    top: 457,
+    position: 'absolute',
+  },
+  group12: {
+    width: 105,
+    height: 158,
+    left: 51,
+    top: 281,
+    position: 'absolute',
+  },
+  group11: {
+    width: 309,
+    height: 55,
+    left: -9,
+    top: 97,
     position: 'absolute',
   },
   rectangle2: {
@@ -76,7 +125,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 20,
-    fontFamily: 'Inter',
     fontWeight: '400',
   },
   welcome: {
@@ -88,7 +136,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#F2DDB6',
     fontSize: 24,
-    fontFamily: 'Inter',
     fontWeight: '400',
   },
   client: {
@@ -100,7 +147,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#F2DDB6',
     fontSize: 32,
-    fontFamily: 'Inter',
     fontWeight: '400',
   },
   ellipse: {
@@ -125,7 +171,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontSize: 20,
-    fontFamily: 'Inter',
     fontWeight: '700',
   },
   shaving: {
@@ -135,7 +180,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontSize: 20,
-    fontFamily: 'Inter',
     fontWeight: '400',
   },
   image2: {
@@ -159,7 +203,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontSize: 20,
-    fontFamily: 'Inter',
     fontWeight: '700',
   },
   cutting: {
@@ -169,7 +212,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontSize: 20,
-    fontFamily: 'Inter',
     fontWeight: '400',
   },
   treatment: {
@@ -179,7 +221,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontSize: 20,
-    fontFamily: 'Inter',
     fontWeight: '400',
   },
   allServices: {
@@ -190,25 +231,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#3F3939',
     fontSize: 24,
-    fontFamily: 'Inter',
     fontWeight: '700',
     textDecorationLine: 'underline',
   },
   vector1: {
-    width: 30,
-    height: 43.60,
     position: 'absolute',
     top: 22,
     left: 307,
-    backgroundColor: '#F2DDB6',
   },
   vector2: {
-    width: 40,
-    height: 40,
     position: 'absolute',
     top: 22,
     left: 23,
-    backgroundColor: '#F2DDB6',
   },
 });
 
