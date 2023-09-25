@@ -1,7 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 export default HomeBarber = () => {
+  const navigation = useNavigation();
+
+  const handleVoltar = () => {
+    navigation.goBack(); 
+  }; 
+  
   return (
     <View style={styles.container}>
       <View style={styles.rectangle7}></View>
@@ -15,16 +23,21 @@ export default HomeBarber = () => {
         <View style={styles.rectangle12}></View>
         <Text style={styles.name}>Name</Text>
         <Text style={styles.lucas}>Lucas</Text>
-        <Text style={styles.h}>13 H</Text>
+        <Text style={{...styles.h, top:66}}>13 H</Text>
         <Text style={styles.carlos}>Carlos</Text>
-        <Text style={styles.h}>14 H</Text>
+        <Text style={{...styles.h, top:113}}>14 H</Text>
         <Text style={styles.scheduleText}>Schedule</Text>
         <View style={styles.line1}></View>
         <View style={styles.line2}></View>
       </View>
-      <View style={styles.vector1}></View>
-      <View style={styles.vector2}></View>
-      <View style={styles.vector3}></View>
+      
+      <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
+        <Icon name="chevron-right" size={40} color='#F2DDB6'  />
+      </TouchableOpacity>
+      
+      <Icon name="bars" size={40} color='#F2DDB6' style={{...styles.vector3}} />
+    
+    
     </View>
   );
 }
@@ -56,7 +69,6 @@ const styles = StyleSheet.create({
     height: 52,
     color: '#F2DDB6',
     fontSize: 24,
-    fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 3,
@@ -68,7 +80,6 @@ const styles = StyleSheet.create({
     height: 52,
     color: '#F2DDB6',
     fontSize: 32,
-    fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 0,
@@ -80,7 +91,6 @@ const styles = StyleSheet.create({
     height: 52,
     color: '#3F3939',
     fontSize: 24,
-    fontFamily: 'Inter',
     fontWeight: '700',
     textDecorationLine: 'underline',
     position: 'absolute',
@@ -114,7 +124,6 @@ const styles = StyleSheet.create({
   name: {
     color: 'white',
     fontSize: 24,
-    fontFamily: 'Inter',
     fontWeight: '700',
     position: 'absolute',
     top: 9,
@@ -124,7 +133,6 @@ const styles = StyleSheet.create({
   lucas: {
     color: '#3F3939',
     fontSize: 16,
-    fontFamily: 'Inter',
     fontWeight: '700',
     position: 'absolute',
     top: 66,
@@ -134,17 +142,14 @@ const styles = StyleSheet.create({
   h: {
     color: '#3F3939',
     fontSize: 16,
-    fontFamily: 'Inter',
     fontWeight: '700',
     position: 'absolute',
-    top: 66,
     left: 174,
     textAlign: 'center',
   },
   carlos: {
     color: '#3F3939',
     fontSize: 16,
-    fontFamily: 'Inter',
     fontWeight: '700',
     position: 'absolute',
     top: 113,
@@ -154,7 +159,6 @@ const styles = StyleSheet.create({
   scheduleText: {
     color: 'white',
     fontSize: 24,
-    fontFamily: 'Inter',
     fontWeight: '700',
     position: 'absolute',
     top: 9,
@@ -182,7 +186,7 @@ const styles = StyleSheet.create({
   vector1: {
     width: 30,
     height: 43.60,
-    backgroundColor: '#F2DDB6',
+   // backgroundColor: '#F2DDB6',
     position: 'absolute',
     top: 22,
     left: 306,
@@ -190,7 +194,7 @@ const styles = StyleSheet.create({
   vector2: {
     width: 65,
     height: 75.83,
-    backgroundColor: '#F2DDB6',
+   // backgroundColor: '#F2DDB6',
     position: 'absolute',
     top: 104,
     left: 147,
@@ -198,7 +202,7 @@ const styles = StyleSheet.create({
   vector3: {
     width: 40,
     height: 40,
-    backgroundColor: '#F2DDB6',
+  //  backgroundColor: '#F2DDB6',
     position: 'absolute',
     top: 22,
     left: 23,
