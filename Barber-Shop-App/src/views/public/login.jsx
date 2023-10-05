@@ -2,19 +2,19 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 
-import HomeClient from "../client/HomeClient";
+import HomeClient from '../client/HomeClient';
 import HomeBarber from '../barber/HomeBarber'
 
-export default Login = ({navigation}) => {
+export default Login = () => {
  
-//  const navigation = useNavigation();
-//
-//  const navigateToClient = () => {
-//      navigation.navigate('NavigatorClient'); 
-//  };
-//  const navigateToBarber = () => {
-//      navigation.navigate('NavigatorBaber'); 
-//  }; 
+  const navigation = useNavigation();
+
+  const navigateToClient = () => {
+      navigation.navigate('HomeClient'); 
+  };
+  const navigateToBarber = () => {
+      navigation.navigate('HomeBarber'); 
+  }; 
  
   return (
   
@@ -38,10 +38,10 @@ export default Login = ({navigation}) => {
           <Text style={{ ...styles.text, left: 13, top: 11 }}>User</Text>
         </View>
 
-        <View style={{ ...styles.button, left: 64, top: 540 }}>
+        <View style={{ ...styles.button, width: 233, height: 57,left: 64, top: 540 }}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('HomeClient')}
+            onPress={navigateToClient}
             > 
             <Text style={{ ...styles.loginText, left: 68, top: 5.12, fontSize: 36, }}>Login</Text>
           </TouchableOpacity> 
@@ -49,12 +49,13 @@ export default Login = ({navigation}) => {
 
         <View style={{ ...styles.button, width: 104, height: 45, left: 232, top: 647 }}>
           <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('HomeBarber')}
+            style={{ ...styles.button, width: 104, height: 45}}
+            onPress={navigateToBarber}
             >  
             <Text style={{ ...styles.loginText, left: 13, top: 10, fontSize: 20, }}>Register</Text>
           </TouchableOpacity>
         </View>
+      
       </View>
       
     </View>
@@ -120,8 +121,6 @@ const styles = StyleSheet.create({
       position: 'absolute',
       borderRadius: 10,
       backgroundColor: '#D98236',
-      shadowColor: 'rgba(0, 0, 0, 0.25)',
-      shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 1,
       borderWidth: 1,
       borderColor: 'black',
