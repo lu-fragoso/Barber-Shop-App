@@ -3,7 +3,14 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 
+//import ProfileClient from './ProfileClient';
+
 export default HomeClient = () => {
+
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
+
   const navigation = useNavigation();
 
   const handleVoltar = () => {
@@ -42,9 +49,11 @@ export default HomeClient = () => {
         <Text style={styles.treatment}>Treatment</Text>
       </View>
       <Text style={styles.allServices}>All services</Text>
-     
-      <Icon name="bars" size={40} color='#F2DDB6' style={{...styles.vector2}} />
-    
+      
+      <TouchableOpacity onPress={openDrawer} style={{...styles.vector2}} >
+        <Icon name="bars" size={40} color='#F2DDB6' style={{...styles.vector2}} />
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
         <Icon name="chevron-right" size={40} color='#F2DDB6'  />
       </TouchableOpacity>
