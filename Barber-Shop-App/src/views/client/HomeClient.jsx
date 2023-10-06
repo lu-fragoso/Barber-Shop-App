@@ -51,7 +51,7 @@ export default HomeClient = () => {
       <Text style={styles.allServices}>All services</Text>
       
       <TouchableOpacity onPress={openDrawer} style={{...styles.vector2}} >
-        <Icon name="bars" size={40} color='#F2DDB6' style={{...styles.vector2}} />
+        <Icon name="bars" size={40} color='#F2DDB6' />
       </TouchableOpacity>
 
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
