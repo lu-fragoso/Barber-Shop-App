@@ -1,7 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { useNavigation } from '@react-navigation/native';
+
+import HomeClient from './HomeClient';
 
 export default ProfileClient = () => {
+  
+  const navigation = useNavigation();
+  
+  const navigateToHomeClient = () => {
+    navigation.navigate('HomeClient');
+  };
+  
+  const handleVoltar = () => {
+    navigation.goBack(); 
+  };
+  
   return (
     <View style={styles.container}>
       <View style={styles.rectangle}></View>
@@ -24,9 +39,17 @@ export default ProfileClient = () => {
         <View style={styles.rectangle9}></View>
         <Text style={styles.changePassword}>Change Password</Text>
       </View>
+      
       <View style={styles.vector1}></View>
-      <View style={styles.vector2}></View>
-      <View style={styles.vector3}></View>
+      <Icon name="user" size={80} color='#F2DDB6' style={{...styles.vector2}}/>
+      <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
+        <Icon name="chevron-right" size={40} color='#F2DDB6'  />
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={navigateToHomeClient} style={{...styles.vector3}} >
+        <Icon name="home" size={40} color='#F2DDB6' />
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -67,7 +90,7 @@ const styles = StyleSheet.create({
     height: 25,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 0,
@@ -79,7 +102,7 @@ const styles = StyleSheet.create({
     height: 25,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 45,
@@ -97,7 +120,7 @@ const styles = StyleSheet.create({
     height: 37,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 0,
@@ -108,7 +131,7 @@ const styles = StyleSheet.create({
     height: 37,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 42,
@@ -126,7 +149,7 @@ const styles = StyleSheet.create({
     height: 37,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 0,
@@ -137,7 +160,7 @@ const styles = StyleSheet.create({
     height: 37,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 42,
@@ -164,7 +187,7 @@ const styles = StyleSheet.create({
     height: 28,
     color: 'white',
     fontSize: 20,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     textAlign: 'center',
     position: 'absolute',
@@ -172,25 +195,17 @@ const styles = StyleSheet.create({
     left: 9,
   },
   vector1: {
-    width: 30,
-    height: 43.60,
-    backgroundColor: '#F2DDB6',
     position: 'absolute',
     top: 22,
-    left: 305,
+    left: 307,
   },
   vector2: {
-    width: 65,
-    height: 65,
-    backgroundColor: '#F2DDB6',
     position: 'absolute',
+    justifyContent:'center',
     top: 115,
-    left: 147,
+    //left: 147,
   },
   vector3: {
-    width: 40,
-    height: 40,
-    backgroundColor: '#F2DDB6',
     position: 'absolute',
     top: 22,
     left: 23,
