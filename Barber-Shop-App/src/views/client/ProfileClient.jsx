@@ -36,12 +36,12 @@ export default ProfileClient = () => {
         <Text style={styles.passwordValue}>**********</Text>
       </View>
       <View style={styles.group4}>
-        <View style={styles.rectangle9}></View>
+        <View style={styles.rectangle9}/>
         <Text style={styles.changePassword}>Change Password</Text>
       </View>
       
-      <View style={styles.vector1}></View>
       <Icon name="user" size={80} color='#F2DDB6' style={{...styles.vector2}}/>
+      
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
         <Icon name="chevron-right" size={40} color='#F2DDB6'  />
       </TouchableOpacity>
