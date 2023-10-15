@@ -3,15 +3,15 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 
-//import ProfileClient from './ProfileClient';
+import ProfileClient from '../client/ProfileClient'
 
 export default HomeClient = () => {
 
-  const openDrawer = () => {
-    navigation.openDrawer();
-  };
-
   const navigation = useNavigation();
+  
+  const navigateToProfileClient = () => {
+    navigation.navigate('ProfileClient');
+  };
 
   const handleVoltar = () => {
     navigation.goBack(); 
@@ -50,8 +50,8 @@ export default HomeClient = () => {
       </View>
       <Text style={styles.allServices}>All services</Text>
       
-      <TouchableOpacity onPress={openDrawer} style={{...styles.vector2}} >
-        <Icon name="bars" size={40} color='#F2DDB6' />
+      <TouchableOpacity onPress={navigateToProfileClient} style={{...styles.vector2}} >
+        <Icon name="user" size={40} color='#F2DDB6' />
       </TouchableOpacity>
 
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
