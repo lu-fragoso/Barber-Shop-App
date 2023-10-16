@@ -1,12 +1,20 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 
 import HomeClient from '../client/HomeClient';
 import HomeBarber from '../barber/HomeBarber';
 
 export default Login = () => {
- 
+
+  const [Email, setEmail] = useState('');
+  const [Password, setPassword] = useState('');
+  const [errorLogin, setErrorLogin] = useState('');
+
+  const loginFirebase = () =>{
+
+  }
+
   const navigation = useNavigation();
 
   const navigateToClient = () => {
@@ -18,25 +26,35 @@ export default Login = () => {
  
   return (
   
-    <View style={styles.tela}>
-      <View style={styles.div}>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.tela}>
+      
         <Image
           style={{ ...styles.image, top: 60, left:53 }}
           source={require('../images/logo.png')}      
         />
 
         <Text style={{ ...styles.title, left: 85, top: 182 }}>Barber</Text>
-        <Text style={{ ...styles.title, left: 100, top: 254 }}>Shop</Text>
+        <Text style={{ ...styles.title, left: 105, top: 254 }}>Shop</Text>
 
-        <View style={{ ...styles.group, left: 24, top: 469 }}>
-          <View style={styles.rectangle} />
-          <Text style={{ ...styles.text, left: 11, top: 11 }}>Password</Text>
-        </View>
+       
+        <TextInput
+          style={{...styles.rectangle, top:398, left:24}}
+          placeholder='Enter your E-mail'
+          placeholderTextColor="black"
+          type = "text"
+          onChangeText={text => setEmail(text)}
+          value={Email}
+        />
 
-        <View style={{ ...styles.group, left: 24, top: 398 }}>
-          <View style={styles.rectangle} />
-          <Text style={{ ...styles.text, left: 13, top: 11 }}>User</Text>
-        </View>
+        <TextInput
+          placeholder='Enter your Password'
+          placeholderTextColor="black"
+          style={{...styles.rectangle, left: 24, top: 469 }}
+          onChangeText={Password => setPassword(Password)}
+          value={Password}
+        />
+      
+
 
         <View style={{ ...styles.button, width: 233, height: 57,left: 64, top: 540 }}>
           <TouchableOpacity
@@ -56,9 +74,9 @@ export default Login = () => {
           </TouchableOpacity>
         </View>
       
-      </View>
+     
       
-    </View>
+    </KeyboardAvoidingView>
    
   );
 };
@@ -67,24 +85,19 @@ export default Login = () => {
 const styles = StyleSheet.create({
   tela: {
     flex: 1,
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: 'center',
-    width: "100%",
     backgroundColor: '#262626',
+    flexDirection:"row"
   },
   div: {
-    backgroundColor: "#262626",
-    height: 800,
-    overflow: "hidden",
-    position: "relative",
-    width: 360,
+    height: "100%",
+    width: "100%",
    },
   image: {
     width: 255,
     height: 119,
     position: 'absolute',
-    alignItems:'center'
    },
   title: {
     width: 211,
@@ -95,18 +108,15 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#F2DDB6',
    },
-    group: {
-      width: 312,
-      height: 47,
-      position: 'absolute',
-      borderRadius: 10,
-    },
     rectangle: {
       width: 312,
       height: 47,
       position: 'absolute',
+      alignItems: "center",
       borderRadius: 10,
       backgroundColor: '#D9D9D9',
+      paddingLeft:15,
+      fontSize: 20,
     },
     text: {
       position: 'absolute',
