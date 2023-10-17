@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 import ProfileClient from '../client/ProfileClient'
+import Scheduling from '../client/Scheduling'
 
 export default HomeClient = () => {
 
@@ -11,6 +12,10 @@ export default HomeClient = () => {
   
   const navigateToProfileClient = () => {
     navigation.navigate('ProfileClient');
+  };
+
+  const navigateToScheduling = () => {
+    navigation.navigate('Scheduling');
   };
 
   const handleVoltar = () => {
@@ -22,32 +27,43 @@ export default HomeClient = () => {
     <View style={styles.container}>
       
       <View style={styles.rectangle}/>
+      
       <View style={styles.group4}>
+        <TouchableOpacity
+        style={styles.rectangle2}
+        onPress={navigateToScheduling}
+        >
         <View style={styles.rectangle2}/>
         <Text style={styles.scheduleText}>Schedule your appointment !</Text>
+        </TouchableOpacity>
       </View>
+      
       <View style={styles.group11}>
         <Text style={styles.welcome}>Welcome,</Text>
         <Text style={styles.client}>Client!</Text>
       </View>
+      
       <View style={styles.group13}>
         <View style={styles.ellipse}/>
         <Image style={styles.image} source={require('../images/Bigode.png')} />
         <Text style={styles.beard}>Beard</Text>
         <Text style={styles.shaving}>Shaving</Text>
       </View>
+      
       <View style={styles.group12}>
         <Image style={styles.image2} source={require('../images/Tesoura.png')} />
         <View style={styles.ellipse}/>
         <Text style={styles.hair}>Hair</Text>
         <Text style={styles.cutting}>Cutting</Text>
       </View>
+      
       <View style={styles.group14}>
         <Image style={styles.image3} source={require('../images/Xampu.png')} />
         <View style={styles.ellipse}/>
         <Text style={styles.hair}>Hair</Text>
         <Text style={styles.treatment}>Treatment</Text>
       </View>
+      
       <Text style={styles.allServices}>All services</Text>
       
       <TouchableOpacity onPress={navigateToProfileClient} style={{...styles.vector2}} >
@@ -246,7 +262,7 @@ const styles = StyleSheet.create({
   vector1: {
     position: 'absolute',
     top: 22,
-    left: 307,
+    right: 23,
   },
   vector2: {
     position: 'absolute',

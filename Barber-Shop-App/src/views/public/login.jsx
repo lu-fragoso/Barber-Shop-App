@@ -47,9 +47,10 @@ export default Login = () => {
         />
 
         <TextInput
+          style={{...styles.rectangle, left: 24, top: 469 }}
           placeholder='Enter your Password'
           placeholderTextColor="black"
-          style={{...styles.rectangle, left: 24, top: 469 }}
+          type='Password'
           onChangeText={Password => setPassword(Password)}
           value={Password}
         />

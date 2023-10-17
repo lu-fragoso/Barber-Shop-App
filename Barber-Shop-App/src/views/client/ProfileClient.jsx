@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   vector1: {
     position: 'absolute',
     top: 22,
-    left: 307,
+    right: 23,
   },
   vector2: {
     position: 'absolute',
