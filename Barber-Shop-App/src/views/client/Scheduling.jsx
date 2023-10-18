@@ -52,16 +52,13 @@ export default Scheduling = () => {
       
       <BouncyCheckbox
         size={25}
-        fillColor="red"
+        fillColor="green"
         unfillColor="#FFFFFF"
         text="Custom Checkbox"
         iconStyle={{ borderColor: "red" }}
         innerIconStyle={{ borderWidth: 2 }}
-        textStyle={{ fontFamily: "JosefinSans-Regular" }}
-        onPress={() => setSelected(!selected)}     
-      
-      
-      
+        textStyle={{ textDecorationLine: "none" }}
+        onPress={() => setSelected(!selected)}      
       />
 
 
@@ -94,6 +91,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
 
+  },
+  group: {
+    top:300,  
+    width: 219,
+    height: 70,
+    position: 'absolute',
   },
   optionBarber: {
     flexDirection: 'row',
@@ -136,143 +139,6 @@ const styles = StyleSheet.create({
     //fontFamily: 'Inter',
     fontWeight: '400',
     textDecorationLine: 'underline',
-  },
-  group2: {
-    height: 107,
-    position: 'absolute',
-    top: 181,
-  },
-  day: {
-    width: 198,
-    height: 52,
-    position: 'absolute',
-    top: 0,
-    textAlign: 'center',
-    color: '#F2DDB6',
-    fontSize: 24,
-    //fontFamily: 'Inter',
-    fontWeight: '400',
-    textDecorationLine: 'underline',
-  },
-  dayTable: {
-    width: 279,
-    height: 37,
-    position: 'absolute',
-    top: 70,
-  },
-  rectangle12: {
-    width: 279,
-    height: 37,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    backgroundColor: '#3F3939',
-  },
-  dayTableText: {
-    width: 71.06,
-    height: 22.35,
-    position: 'absolute',
-    top: 6.94,
-    left: 25.08,
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 24,
-    //fontFamily: 'Inter',
-    fontWeight: '700',
-  },
-  october: {
-    width: 145,
-    height: 22,
-    position: 'absolute',
-    top: 7,
-    left: 113,
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 24,
-    //fontFamily: 'Inter',
-    fontWeight: '700',
-  },
-  group3: {
-    height: 107,
-    position: 'absolute',
-    top: 323,
-  },
-  hour: {
-    width: 198,
-    height: 52,
-    position: 'absolute',
-    top: 0,
-    left: 41,
-    textAlign: 'center',
-    color: '#F2DDB6',
-    fontSize: 24,
-    //fontFamily: 'Inter',
-    fontWeight: '400',
-    textDecorationLine: 'underline',
-  },
-  hourTable: {
-    width: 279,
-    height: 37,
-    position: 'absolute',
-    top: 70,
-  },
-  hourTableText: {
-    width: 71.06,
-    height: 22.35,
-    position: 'absolute',
-    top: 7,
-    left: 48,
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 24,
-    //fontFamily: 'Inter',
-    fontWeight: '700',
-  },
-  group4: {
-    height: 183,
-    position: 'absolute',
-    top: 462,
-  },
-  chooseYourBarber: {
-    width: 238,
-    height: 52,
-    position: 'absolute',
-    top: 0,
-    left: 21,
-    textAlign: 'center',
-    color: '#F2DDB6',
-    fontSize: 24,
-    //fontFamily: 'Inter',
-    fontWeight: '400',
-    textDecorationLine: 'underline',
-  },
-  barber: {
-    width: 208,
-    height: 22,
-    position: 'absolute',
-    top: 13,
-    left: 61,
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 24,
-    //fontFamily: 'Inter',
-    fontWeight: '700',
-  },
-  rectangle13: {
-    width: 21,
-    height: 21,
-    position: 'absolute',
-    top: 16,
-    left: 27,
-    border: '2px #D9D9D9 solid',
-  },
-  rectangle14: {
-    width: 21,
-    height: 21,
-    position: 'absolute',
-    top: 58,
-    left: 27,
-    border: '2px #D9D9D9 solid',
   },
   vector1: {
     position: 'absolute',
