@@ -1,5 +1,5 @@
 import React, { useEffect, useState}  from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { useNavigation } from '@react-navigation/native';
@@ -9,7 +9,15 @@ import HomeClient from './HomeClient';
 
 export default Scheduling = () => {
 
-  const [selected, setSelected] = useState(false);
+  const [selected, setSelected] = useState([]);
+
+  const handleCheckboxPress = (item) => {
+    if (selected === item.key) {
+      setSelected(null);
+    } else {
+      setSelected(item.key);
+    }
+  };
   
   //function toggle(id){
   //  
@@ -39,7 +47,6 @@ export default Scheduling = () => {
     {key:'3', value:'Profissional 3'},
   ]   
 
-  
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
@@ -50,16 +57,25 @@ export default Scheduling = () => {
       </TouchableOpacity>
       <Text style={styles.scheduling}>Scheduling</Text>
       
-      <BouncyCheckbox
-        size={25}
-        fillColor="green"
-        unfillColor="#FFFFFF"
-        text="Custom Checkbox"
-        iconStyle={{ borderColor: "red" }}
-        innerIconStyle={{ borderWidth: 2 }}
-        textStyle={{ textDecorationLine: "none" }}
-        onPress={() => setSelected(!selected)}      
-      />
+
+     <View style={styles.options}>
+        <FlatList 
+          data={profissionais} 
+          keyExtractor={item=> item.value} 
+          renderItem={({item}) =>  
+          <BouncyCheckbox
+            size={25}
+            fillColor="#D98236"
+            unfillColor="#FFFFFF"
+            text={item.value}
+            iconStyle={{ borderColor: "red" }}
+            innerIconStyle={{ borderWidth: 2 }}
+            textStyle={styles.optionBarber}
+            onPress={() => handleCheckboxPress(item)} 
+              />
+          } />     
+      </View>
+     
 
 
      
@@ -67,10 +83,11 @@ export default Scheduling = () => {
     
           
           
-      <View style={styles.group}>
-        <View style={styles.rectangle}></View>
-        <Text style={styles.scheduleText}>Schedule your appointment !</Text>
-      </View>
+          
+          
+     
+      
+     
     </View>
   );
 
@@ -84,6 +101,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   options: {
+    top: 180,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  options2: {
     width: 22,
     height: 22,
     borderRadius: 5,
@@ -99,8 +121,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   optionBarber: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    padding: 5,
+    marginVertical: 8,
+    marginHorizontal: 8,
+    textDecorationLine: "none"
   },
   optext: {
     marginLeft: 12,
@@ -170,3 +194,10 @@ const styles = StyleSheet.create({
 //  
 //  </View>
 //   ))}
+
+
+
+//<View style={styles.group}>
+//        <View style={styles.rectangle}></View>
+//        <Text style={styles.scheduleText}>Schedule your appointment !</Text>
+//      </View>
