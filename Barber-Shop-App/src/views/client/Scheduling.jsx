@@ -1,36 +1,13 @@
 import React, { useEffect, useState}  from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { useNavigation } from '@react-navigation/native';
-
+import { SelectList } from 'react-native-dropdown-select-list'
 
 import HomeClient from './HomeClient';
 
 export default Scheduling = () => {
-
-  const [selected, setSelected] = useState([]);
-
-  const handleCheckboxPress = (item) => {
-    if (selected === item.key) {
-      setSelected(null);
-    } else {
-      setSelected(item.key);
-    }
-  };
-  
-  //function toggle(id){
-  //  
-  //  let index = selected.findIndex(i => i === id);
-  //  let arrSelecteds = [...selected];
-  //  if (index !== -1){
-  //    arrSelecteds.splice(index, 1);
-  //  }else{
-  //    multiple? arrSelecteds.push(id): (arrSelecteds = [id]);
-  //  }
-  //  setSelected(arrSelecteds);
-  //}
-  
+ 
   const navigation = useNavigation();
   
   const navigateToHomeClient = () => {
@@ -39,6 +16,12 @@ export default Scheduling = () => {
   
   const handleVoltar = () => {
     navigation.goBack(); 
+  };
+  
+  const [selected, setSelected] = useState([]);
+  
+  const onSelectedItemsChange = (items) => {
+    setSelected(profissionais);
   };
   
   const profissionais = [
@@ -59,21 +42,22 @@ export default Scheduling = () => {
       
 
      <View style={styles.options}>
-        <FlatList 
+        <Text style={styles.Texting}> Select the barber</Text>
+          <SelectList 
+          setSelected={(val) => setSelected(val)} 
           data={profissionais} 
-          keyExtractor={item=> item.value} 
-          renderItem={({item}) =>  
-          <BouncyCheckbox
-            size={25}
-            fillColor="#D98236"
-            unfillColor="#FFFFFF"
-            text={item.value}
-            iconStyle={{ borderColor: "red" }}
-            innerIconStyle={{ borderWidth: 2 }}
-            textStyle={styles.optionBarber}
-            onPress={() => handleCheckboxPress(item)} 
-              />
-          } />     
+          boxStyles={{backgroundColor:'#3F3939', fontSize:16, color: 'white'}}
+          dropdownStyles={{backgroundColor:'#3F3939'}}
+          dropdownItemStyles={{marginHorizontal:10}}
+          dropdownTextStyles={{color:'white', fontWeight:'bold'}}
+          maxHeight={100}
+          
+          
+          />
+             
+      
+      
+      
       </View>
      
 
@@ -101,36 +85,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   options: {
-    top: 180,
+    width:'100%',
+    top: 10,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  options2: {
-    width: 22,
-    height: 22,
-    borderRadius: 5,
-    backgroundColor: 'red',
-    alignItems: 'center',
-    justifyContent: 'center',
-
   },
   group: {
     top:300,  
     width: 219,
     height: 70,
     position: 'absolute',
-  },
-  optionBarber: {
-    padding: 5,
-    marginVertical: 8,
-    marginHorizontal: 8,
-    textDecorationLine: "none"
-  },
-  optext: {
-    marginLeft: 12,
-    color: '#555',
-    fontSize: 20,
-    fontWeight: '600',
   },
   rectangle: {
     width: 219,
@@ -161,6 +125,13 @@ const styles = StyleSheet.create({
     color: '#F2DDB6',
     fontSize: 32,
     //fontFamily: 'Inter',
+    fontWeight: '400',
+    textDecorationLine: 'underline',
+  },
+  Texting: {
+    textAlign: 'center',
+    color: '#F2DDB6',
+    fontSize: 24,
     fontWeight: '400',
     textDecorationLine: 'underline',
   },
