@@ -43,21 +43,20 @@ export default Scheduling = () => {
 
      <View style={styles.options}>
         <Text style={styles.Texting}> Select the barber</Text>
-          <SelectList 
-          setSelected={(val) => setSelected(val)} 
-          data={profissionais} 
-          boxStyles={{backgroundColor:'#3F3939', fontSize:16, color: 'white'}}
-          dropdownStyles={{backgroundColor:'#3F3939'}}
-          dropdownItemStyles={{marginHorizontal:10}}
-          dropdownTextStyles={{color:'white', fontWeight:'bold'}}
-          maxHeight={100}
-          
-          
-          />
-             
-      
-      
-      
+          <View style={{top: 15}}>
+            <SelectList 
+            setSelected={(val) => setSelected(val)} 
+            data={profissionais} 
+            placeholder='Selecte your Barber'
+            boxStyles={{backgroundColor:'#3F3939', fontSize:16, color: 'white'}}
+            dropdownStyles={{backgroundColor:'#3F3939'}}
+            dropdownItemStyles={{marginHorizontal:10}}
+            dropdownTextStyles={{color:'white', fontWeight:'bold'}}
+            maxHeight={100}
+            notFoundText='Barber not found!'
+            inputStyles={{fontWeight:'bold',color:'white'}}
+            />
+          </View>     
       </View>
      
 
