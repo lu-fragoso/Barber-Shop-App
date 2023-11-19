@@ -1,6 +1,5 @@
 import React, { useEffect, useState}  from 'react';
 import { View, Text, TouchableOpacity, StyleSheet,TextInput, Pressable, Platform } from 'react-native';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { useNavigation } from '@react-navigation/native';
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -22,37 +21,6 @@ export default Scheduling = () => {
   const handleAgendar = () => {
     console.log('Agendamento concluido')
   };
-
-  const formatDate = (rawDate) => {
-    let date = new Date(rawDate);
-
-    let year = date.getFullYear();
-    let month = date.getMonth()+1;
-    let day = date.getDate();
-
-    return `${day}-${month}-${year}`
-  }
-
-  const onChange = ({type}, selectedDate) => {
-    if(type == "set"){
-      const currentDate = selectedDate
-      setDate(currentDate);
-      if (Platform.OS === 'android'){
-        toggleDataPicker(formatDate(currentDate))
-      }
-
-    }else{
-      toggleDataPicker()
-    }   
-  };
-
-  const toggleDataPicker = () => {setShowPicker(!showPicker)}
-  
-  const [selected, setSelected] = useState([]);
-  const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false)
-  const [birth, setBirth  ] = useState(null)
-
 
   
   const profissionais = [
@@ -89,35 +57,6 @@ export default Scheduling = () => {
             />
           </View>     
       </View>
-      
-
-      {showPicker && (
-        <RNDateTimePicker
-        mode='date'
-        display='spinner'
-        value={date}
-        onChange={onChange}
-        />
-      )}
-          
-      {!showPicker && (
-      <Pressable
-        onPress={toggleDataPicker}
-      > 
-        <TextInput
-          value={birth}
-          onChangeText={setBirth}   
-          editable={false}
-        />
-        
-      </Pressable>  
-
-      )}  
-    
-      
-      
-    
-          
           
           
           
