@@ -1,5 +1,6 @@
 import React, { useEffect, useState}  from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet,TextInput, Pressable, Platform } from 'react-native';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { useNavigation } from '@react-navigation/native';
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -17,17 +18,47 @@ export default Scheduling = () => {
   const handleVoltar = () => {
     navigation.goBack(); 
   };
+
+  const handleAgendar = () => {
+    console.log('Agendamento concluido')
+  };
+
+  const formatDate = (rawDate) => {
+    let date = new Date(rawDate);
+
+    let year = date.getFullYear();
+    let month = date.getMonth()+1;
+    let day = date.getDate();
+
+    return `${day}-${month}-${year}`
+  }
+
+  const onChange = ({type}, selectedDate) => {
+    if(type == "set"){
+      const currentDate = selectedDate
+      setDate(currentDate);
+      if (Platform.OS === 'android'){
+        toggleDataPicker(formatDate(currentDate))
+      }
+
+    }else{
+      toggleDataPicker()
+    }   
+  };
+
+  const toggleDataPicker = () => {setShowPicker(!showPicker)}
   
   const [selected, setSelected] = useState([]);
-  
-  const onSelectedItemsChange = (items) => {
-    setSelected(profissionais);
-  };
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false)
+  const [birth, setBirth  ] = useState(null)
+
+
   
   const profissionais = [
-    {key:'1', value:'Profissional 1'},
-    {key:'2', value:'Profissional 2'},
-    {key:'3', value:'Profissional 3'},
+    {key:'1', value:'Alan'},
+    {key:'2', value:'Andre'},
+    {key:'3', value:'Jose'},
   ]   
 
   return (
@@ -58,10 +89,32 @@ export default Scheduling = () => {
             />
           </View>     
       </View>
-     
+      
 
+      {showPicker && (
+        <RNDateTimePicker
+        mode='date'
+        display='spinner'
+        value={date}
+        onChange={onChange}
+        />
+      )}
+          
+      {!showPicker && (
+      <Pressable
+        onPress={toggleDataPicker}
+      > 
+        <TextInput
+          value={birth}
+          onChangeText={setBirth}   
+          editable={false}
+        />
+        
+      </Pressable>  
 
-     
+      )}  
+    
+      
       
     
           
