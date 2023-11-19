@@ -1,27 +1,54 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform} from 'react-native'
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Alert ,Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { app, db } from './../../../firebaseConfig'
 
 import HomeClient from '../client/HomeClient';
 import HomeBarber from '../barber/HomeBarber';
+import SingUpClient from '../client/SingUpClient';
+
 
 export default Login = () => {
 
-  const [Email, setEmail] = useState('');
-  const [Password, setPassword] = useState('');
-  const [errorLogin, setErrorLogin] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const loginFirebase = () =>{
+  const auth = getAuth(app); 
+  
+  const navigation = useNavigation();
 
+  async function handleLogin(user){
+    try{
+      if (user.email === "admin@barber.br") {
+        navigation.navigate('HomeBarber');
+      } else {
+        navigation.navigate('HomeClient');
+      }
+    } catch (error){
+      alert("Erro no login: "+ error.message)
+    }
   }
 
-  const navigation = useNavigation();
+  const signIn = () => {
+    signInWithEmailAndPassword(auth,email,password)
+    .then((userCredencial)=>{
+      const user = userCredencial.user
+      Alert.alert('Login realizado com sucesso')
+      handleLogin(user)
+    })
+    .catch(error => {
+      console.error('Login não efetuado', error)
+    })
+  }
+
+
 
   const navigateToClient = () => {
       navigation.navigate('HomeClient'); 
   };
-  const navigateToBarber = () => {
-      navigation.navigate('HomeBarber'); 
+  const navigateToSingUpClient = () => {
+      navigation.navigate('SingUpClient'); 
   }; 
  
   return (
@@ -43,16 +70,16 @@ export default Login = () => {
           placeholderTextColor="black"
           type = "text"
           onChangeText={text => setEmail(text)}
-          value={Email}
+          value={email}
         />
 
         <TextInput
           style={{...styles.rectangle, left: 24, top: 469 }}
           placeholder='Enter your Password'
           placeholderTextColor="black"
-          type='Password'
+          secureTextEntry={true}
           onChangeText={Password => setPassword(Password)}
-          value={Password}
+          value={password}
         />
       
 
@@ -60,7 +87,7 @@ export default Login = () => {
         <View style={{ ...styles.button, width: 233, height: 57,left: 64, top: 540 }}>
           <TouchableOpacity
             style={styles.button}
-            onPress={navigateToClient}
+            onPress={signIn}
             > 
             <Text style={{ ...styles.loginText, left: 68, top: 5.12, fontSize: 36, }}>Login</Text>
           </TouchableOpacity> 
@@ -69,7 +96,7 @@ export default Login = () => {
         <View style={{ ...styles.button, width: 104, height: 45, left: 232, top: 647 }}>
           <TouchableOpacity
             style={{ ...styles.button, width: 104, height: 45}}
-            onPress={navigateToBarber}
+            onPress={navigateToSingUpClient}
             >  
             <Text style={{ ...styles.loginText, left: 13, top: 10, fontSize: 20, }}>Register</Text>
           </TouchableOpacity>

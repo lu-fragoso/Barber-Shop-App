@@ -8,6 +8,7 @@ import HomeClient from './HomeClient';
 
 export default Scheduling = () => {
  
+  const [selected, setSelected] = useState([]);
   const navigation = useNavigation();
   
   const navigateToHomeClient = () => {
@@ -41,7 +42,7 @@ export default Scheduling = () => {
       
 
      <View style={styles.options}>
-        <Text style={styles.Texting}> Select the barber</Text>
+        <Text style={styles.Texting}> Select your barber</Text>
           <View style={{top: 15}}>
             <SelectList 
             setSelected={(val) => setSelected(val)} 

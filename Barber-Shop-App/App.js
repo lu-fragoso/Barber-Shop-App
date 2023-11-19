@@ -12,6 +12,7 @@ function MyStackNavigator() {
       <Stack.Screen name="HomeClient" component={HomeClient} options={{ headerShown: false }}/>
       <Stack.Screen name="ProfileClient" component={ProfileClient} options={{ headerShown: false }}/>
       <Stack.Screen name="Scheduling" component={Scheduling} options={{ headerShown: false }}/>
+      <Stack.Screen name="SingUpClient" component={SingUpClient} options={{ headerShown: false }}/>
       <Stack.Screen name="HomeBarber" component={HomeBarber} options={{ headerShown: false }}/>
 
     </Stack.Navigator>
