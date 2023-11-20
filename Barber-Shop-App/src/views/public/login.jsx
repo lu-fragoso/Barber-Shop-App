@@ -26,7 +26,7 @@ export default Login = () => {
         navigation.navigate('HomeClient');
       }
     } catch (error){
-      alert("Erro no login: "+ error.message)
+      alert("Erro ao fazer login: "+ error.message)
     }
   }
 
