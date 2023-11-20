@@ -14,6 +14,7 @@ function MyStackNavigator() {
       <Stack.Screen name="Scheduling" component={Scheduling} options={{ headerShown: false }}/>
       <Stack.Screen name="SingUpClient" component={SingUpClient} options={{ headerShown: false }}/>
       <Stack.Screen name="HomeBarber" component={HomeBarber} options={{ headerShown: false }}/>
+      <Stack.Screen name="HomeAdmin" component={HomeAdmin} options={{ headerShown: false }}/>
 
     </Stack.Navigator>
   );

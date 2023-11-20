@@ -6,6 +6,7 @@ import { app, db } from './../../../firebaseConfig'
 
 import HomeClient from '../client/HomeClient';
 import HomeBarber from '../barber/HomeBarber';
+import HomeAdmin from '../admin/HomeAdmin';
 import SingUpClient from '../client/SingUpClient';
 
 
@@ -21,7 +22,7 @@ export default Login = () => {
   async function handleLogin(user){
     try{
       if (user.email === "admin@barber.br") {
-        navigation.navigate('HomeBarber');
+        navigation.navigate('HomeAdmin');
       } else {
         navigation.navigate('HomeClient');
       }
