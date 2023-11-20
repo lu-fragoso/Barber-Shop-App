@@ -1,10 +1,29 @@
-import React from 'react';
-import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { FlatList } from 'react-native-gesture-handler';
+import { db } from '../../../firebaseConfig';
+import { query, collection,getDocs } from 'firebase/firestore';
 
-export default HomeAdmin = () => {
-  const navigation = useNavigation();
+export default HomeAdmin = ({navigation}) => {
+  const [users,setUsers] = useState([])
+
+  useEffect(()=>{
+    
+    async function listUsers(){
+
+      try { 
+        const usersSnapshot = await getDocs(collection(db,'barbers'))
+        const usersData = usersSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
+        setUsers(usersData)
+      } catch (error) {
+        console.error('Erro ao buscar usuários', error.message)
+      }
+    }
+    listUsers()
+  },[])
+
 
   const handleVoltar = () => {
     navigation.goBack(); 
@@ -14,23 +33,48 @@ export default HomeAdmin = () => {
     <View style={styles.container}>
       <View style={styles.rectangle7}></View>
       <View style={styles.group11}>
-        <Text style={styles.welcome}>Welcome,</Text>
-        <Text style={styles.barber}>Barber!</Text>
+        <Text style={{...styles.welcomeText,top: 10}}>Welcome,</Text>
+        <Text style={{...styles.welcomeText, left: 120,fontSize: 32}}>Admin!</Text>
       </View>
-      <Text style={styles.yourScheduledJobs}>Your scheduled jobs</Text>
+      <Text style={styles.titleText}>Barber Users</Text>
       <View style={styles.schedule}>
-        <View style={styles.rectangle11}></View>
-        <View style={styles.rectangle12}></View>
-        <Text style={styles.name}>Name</Text>
-        <Text style={styles.lucas}>Lucas</Text>
-        <Text style={{...styles.h, top:66}}>13 H</Text>
-        <Text style={styles.carlos}>Carlos</Text>
-        <Text style={{...styles.h, top:113}}>14 H</Text>
-        <Text style={styles.scheduleText}>Schedule</Text>
-        <View style={styles.line1}></View>
-        <View style={styles.line2}></View>
+        <Text style={styles.user}>Users</Text>
+
+        <View style={styles.rectangle11}>
+
+
+
+        <FlatList
+        showsVerticalScrollIndicator = {false}
+        data={users}
+        renderItem={(item)=>{
+          return (
+            <View style={styles.viewuser}>
+         
+            <Text style={styles.users}>
+              {item.displayName} 
+            </Text>
+           
+            </View>
+          )
+        }}
+        
+        />
+
+        </View>
+
+
+
+        
+  
       </View>
-    
+      <TouchableOpacity
+      style={{...styles.button, right: 20,bottom: 30}}
+      onPress={()=>navigation.navigate('RegisterBarber')}>
+        <View style={{...styles.button, backgroundColor: '#3F3939',}}/>
+        <Text style={{color: 'white'}}>Add Barber</Text>
+
+      </TouchableOpacity>
     </View>
   );
 }
@@ -57,7 +101,7 @@ const styles = StyleSheet.create({
     top: 97,
     left: -9,
   },
-  welcome: {
+  welcomeText: {
     width: 198,
     height: 52,
     color: '#F2DDB6',
@@ -79,11 +123,11 @@ const styles = StyleSheet.create({
     left: 148,
     textAlign: 'center',
   },
-  yourScheduledJobs: {
+  titleText: {
     width: 251,
     height: 52,
     color: '#3F3939',
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
     textDecorationLine: 'underline',
     position: 'absolute',
@@ -95,12 +139,12 @@ const styles = StyleSheet.create({
     width: 267,
     height: 432,
     position: 'absolute',
-    top: 324,
+    top: 290,
     left: 47,
   },
   rectangle11: {
     width: 267,
-    height: 432,
+    height: 380,
     backgroundColor: '#D9D9D9',
     position: 'absolute',
     top: 0,
@@ -114,31 +158,36 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
   },
-  name: {
+  button: {
+    width: 150,
+    height: 50,
+    position: 'absolute',
+  
+  },
+  user: {
     color: 'white',
     fontSize: 24,
     fontWeight: '700',
-    position: 'absolute',
+    position: 'relative',
     top: 9,
-    left: 24,
     textAlign: 'center',
+    justifyContent: 'center'
   },
-  lucas: {
-    color: '#3F3939',
-    fontSize: 16,
-    fontWeight: '700',
-    position: 'absolute',
-    top: 66,
-    left: 24,
-    textAlign: 'center',
+  users: {
+    width: '90%',
+    alignContent: 'center',
+    backgroundColor:'#f5f5f5cf',
+    padding: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 5,
+    margin: 15,
+    color: 'black'
   },
-  h: {
-    color: '#3F3939',
-    fontSize: 16,
-    fontWeight: '700',
-    position: 'absolute',
-    left: 174,
-    textAlign: 'center',
+  viewuser: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
   carlos: {
     color: '#3F3939',
@@ -157,48 +206,6 @@ const styles = StyleSheet.create({
     top: 9,
     left: 136,
     textAlign: 'center',
-  },
-  line1: {
-    width: 267,
-    height: 0,
-    position: 'absolute',
-    top: 102,
-    left: 0,
-    borderWidth: 1,
-    borderColor: 'black',
-  },
-  line2: {
-    width: 267,
-    height: 0,
-    position: 'absolute',
-    top: 147,
-    left: 0,
-    borderWidth: 1,
-    borderColor: 'black',
-  },
-  vector1: {
-    width: 30,
-    height: 43.60,
-   // backgroundColor: '#F2DDB6',
-    position: 'absolute',
-    top: 22,
-    left: 306,
-  },
-  vector2: {
-    width: 65,
-    height: 75.83,
-   // backgroundColor: '#F2DDB6',
-    position: 'absolute',
-    top: 104,
-    left: 147,
-  },
-  vector3: {
-    width: 40,
-    height: 40,
-  //  backgroundColor: '#F2DDB6',
-    position: 'absolute',
-    top: 22,
-    left: 23,
   },
 });
 

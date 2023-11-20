@@ -1,25 +1,25 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default ChangePasswordBarber = () => {
+export default ChangePassword = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.rectangle7}></View>
-      <View style={styles.group18}>
+      <View style={styles.rectangle}></View>
+      <View style={styles.group}>
         <View style={styles.rectangle8}></View>
         <Text style={styles.password}>Password</Text>
-        <Text style={styles.passwordMask}>**********</Text>
+        <Text style={styles.passwordValue}>**********</Text>
       </View>
-      <View style={styles.group19}>
+      <View style={styles.group2}>
         <View style={styles.rectangle8}></View>
         <Text style={styles.confirmPassword}>Confirm Password</Text>
-        <Text style={styles.confirmPasswordMask}>**********</Text>
+        <Text style={styles.confirmPasswordValue}>**********</Text>
       </View>
-      <View style={styles.group4}>
+      <View style={styles.group3}>
         <View style={styles.rectangle9}></View>
         <Text style={styles.changePassword}>Change Password</Text>
       </View>
-      <View style={styles.group13}>
+      <View style={styles.group4}>
         <View style={styles.rectangle9}></View>
         <Text style={styles.cancel}>Cancel</Text>
       </View>
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  rectangle7: {
+  rectangle: {
     width: 360,
     height: 588,
     backgroundColor: '#F2E8DC',
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     top: 212,
     left: 0,
   },
-  group18: {
+  group: {
     width: 312,
     height: 84,
     position: 'absolute',
@@ -56,10 +56,10 @@ const styles = StyleSheet.create({
     width: 312,
     height: 47,
     backgroundColor: '#D9D9D9',
+    borderRadius: 10,
     position: 'absolute',
     top: 37,
     left: 0,
-    borderRadius: 10,
   },
   password: {
     width: 113,
@@ -71,9 +71,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 84,
-    textAlign: 'center',
   },
-  passwordMask: {
+  passwordValue: {
     width: 280,
     height: 37,
     color: '#262626',
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
     top: 42,
     left: 17,
   },
-  group19: {
+  group2: {
     width: 312,
     height: 89,
     position: 'absolute',
@@ -101,9 +100,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 48,
-    textAlign: 'center',
   },
-  confirmPasswordMask: {
+  confirmPasswordValue: {
     width: 280,
     height: 37,
     color: '#262626',
@@ -114,21 +112,12 @@ const styles = StyleSheet.create({
     top: 47,
     left: 17,
   },
-  group4: {
+  group3: {
     width: 122,
     height: 52,
     position: 'absolute',
     top: 714,
     left: 215,
-  },
-  rectangle9: {
-    width: 122,
-    height: 52,
-    backgroundColor: '#D98236',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    borderRadius: 10,
   },
   changePassword: {
     width: 110.23,
@@ -137,12 +126,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'Inter',
     fontWeight: '400',
+    textAlign: 'center',
     position: 'absolute',
     top: 13.45,
     left: 5.57,
-    textAlign: 'center',
   },
-  group13: {
+  group4: {
     width: 122,
     height: 52,
     position: 'absolute',
@@ -150,14 +139,14 @@ const styles = StyleSheet.create({
     left: 16,
   },
   cancel: {
+    left: 28,
+    top: 14,
+    position: 'absolute',
+    textAlign: 'center',
     color: 'white',
     fontSize: 20,
     fontFamily: 'Inter',
     fontWeight: '400',
-    position: 'absolute',
-    top: 14,
-    left: 28,
-    textAlign: 'center',
   },
   vector1: {
     width: 30,
