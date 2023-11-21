@@ -41,26 +41,19 @@ export default HomeAdmin = ({navigation}) => {
         <Text style={styles.user}>Users</Text>
 
         <View style={styles.rectangle11}>
-
-
-
-        <FlatList
-        showsVerticalScrollIndicator = {false}
-        data={users}
-        renderItem={(item)=>{
-          return (
-            <View style={styles.viewuser}>
-         
-            <Text style={styles.users}>
-              {item.displayName} 
-            </Text>
-           
+          {users.map(usuario =>(
+            <View key={usuario.id} style={styles.viewuser}>
+              <Text 
+              style={styles.users}
+              onPress={()=>{
+                navigation.navigate('Details',{
+                  id: usuario.id,
+                })
+              }}> 
+                {usuario.displayName} 
+              </Text> 
             </View>
-          )
-        }}
-        
-        />
-
+        ))}
         </View>
 
 
@@ -182,7 +175,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 5,
     margin: 15,
-    color: 'black'
+    color: '#3F3939',
+    textAlign: 'auto',
+    fontWeight: 'bold',
   },
   viewuser: {
     width: '100%',

@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { useNavigation } from '@react-navigation/native';
+import { collection, addDoc, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { db } from '../../../firebaseConfig';
 
-export default Details = () => {
+export default Details = (navigation, route) => {
   
-  const navigation = useNavigation();
-  
+  const idUser = route.param.id
+
+  useEffect(()=>{
+    
+    async function listUsers(){
+
+      try { 
+        const usersSnapshot = await getDocs(collection(db,'barbers'), where(doc.id, "==", idUser))
+      } catch (error) {
+        console.error('Erro ao buscar usuários', error.message)
+      }
+    }
+    listUsers()
+  },[])
+
   const handleVoltar = () => {
     navigation.goBack(); 
   };
@@ -17,7 +31,7 @@ export default Details = () => {
       <View style={styles.group}>
         <View style={styles.rectangle8}></View>
         <Text style={styles.fullName}>Full Name</Text>
-        <Text style={styles.lucasGarciaFragoso}>Lucas Garcia Fragoso</Text>
+        <Text style={styles.lucasGarciaFragoso}>{name}</Text>
       </View>
       <View style={styles.group2}>
         <View style={styles.rectangle8}></View>
