@@ -47,7 +47,8 @@ export default HomeAdmin = ({navigation}) => {
               style={styles.users}
               onPress={()=>{
                 navigation.navigate('Details',{
-                  id: usuario.id,
+                  uid: usuario.uid,
+                  displayName: usuario.displayName
                 })
               }}> 
                 {usuario.displayName} 

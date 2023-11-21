@@ -1,25 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { collection, addDoc, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
 
-export default Details = (navigation, route) => {
+export default Details = ({navigation, route}) => {
+  const [name,setName] =(route.params.displayName)
+  const displayName = route.params.displayName
+  const uidUser = route.params.uid
+
+  useEffect(() => {
+    async function getUserByDisplayName() {
+      try {
+        const userQuery = query(collection(db, 'barber'), where('displayName', '==', displayName));
+        const userSnapshot = await getDocs(userQuery);
   
-  const idUser = route.param.id
-
-  useEffect(()=>{
-    
-    async function listUsers(){
-
-      try { 
-        const usersSnapshot = await getDocs(collection(db,'barbers'), where(doc.id, "==", idUser))
+        if (!userSnapshot.empty) {
+          userSnapshot.forEach(doc => {
+            console.log('Dados do usuário:', doc.data());
+            // Agora você pode acessar os dados do usuário em doc.data()
+          });
+        } else {
+          console.log('Usuário não encontrado');
+        }
       } catch (error) {
-        console.error('Erro ao buscar usuários', error.message)
+        console.error('Erro ao buscar usuários', error.message);
       }
     }
-    listUsers()
-  },[])
+    getUserByDisplayName();
+  }, [displayName]);
 
   const handleVoltar = () => {
     navigation.goBack(); 
@@ -36,13 +45,9 @@ export default Details = (navigation, route) => {
       <View style={styles.group2}>
         <View style={styles.rectangle8}></View>
         <Text style={styles.user}>User</Text>
-        <Text style={styles.lucasFragoso}>lucas.fragoso</Text>
+        <Text style={styles.lucasFragoso}></Text>
       </View>
-      <View style={styles.group3}>
-        <View style={styles.rectangle8}></View>
-        <Text style={styles.password}>Password</Text>
-        <Text style={styles.passwordValue}>**********</Text>
-      </View>
+      
       <View style={styles.group4}>
         <View style={styles.rectangle9}/>
         <Text style={styles.changePassword}>Change Password</Text>

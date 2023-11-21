@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Alert ,Image, TouchableOpacity, TextInput, Keyb
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app, db } from './../../../firebaseConfig'
+import { collection, addDoc, getDoc, query, where, updateDoc, doc } from 'firebase/firestore';
 
 import HomeClient from '../client/HomeClient';
 import HomeBarber from '../barber/HomeBarber';
@@ -21,10 +22,15 @@ export default Login = () => {
 
   async function handleLogin(user){
     try{
+      const userRef = doc(db, 'barbers', user.uid);
+      const userSnapshot = await getDoc(userRef);
+  
       if (user.email === "admin@barber.br") {
         navigation.navigate('HomeAdmin');
-      } else {
-        navigation.navigate('HomeClient');
+      } else if( userSnapshot.exists() ){
+        navigation.navigate('HomeBarber');
+      } else{
+        navigation.navigate('HomeClient'); 
       }
     } catch (error){
       alert("Erro ao fazer login: "+ error.message)
@@ -35,8 +41,8 @@ export default Login = () => {
     signInWithEmailAndPassword(auth,email,password)
     .then((userCredencial)=>{
       const user = userCredencial.user
-      Alert.alert('Login realizado com sucesso')
       handleLogin(user)
+      Alert.alert('Login realizado com sucesso')
     })
     .catch(error => {
       console.error('Login não efetuado', error)
