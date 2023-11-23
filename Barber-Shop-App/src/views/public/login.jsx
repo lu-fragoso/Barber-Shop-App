@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Alert ,Image, TouchableOpacity, TextInput, Keyb
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app, db } from './../../../firebaseConfig'
-import { collection, addDoc, getDoc, query, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, } from 'firebase/firestore';
 
 import HomeClient from '../client/HomeClient';
 import HomeBarber from '../barber/HomeBarber';
@@ -22,15 +22,28 @@ export default Login = () => {
 
   async function handleLogin(user){
     try{
-      const userRef = doc(db, 'barbers', user.uid);
-      const userSnapshot = await getDoc(userRef);
+      const adminRef = collection(db, 'admin');
+      const usersRef = collection(db, 'users');
+      const barbersRef = collection(db, 'barbers');
   
       if (user.email === "admin@barber.br") {
         navigation.navigate('HomeAdmin');
-      } else if( userSnapshot.exists() ){
-        navigation.navigate('HomeBarber');
-      } else{
-        navigation.navigate('HomeClient'); 
+      } else {
+        const userQuery = query(usersRef, where("email", "==", user.email));
+        const userSnapshot = await getDocs(userQuery);
+  
+        if (!userSnapshot.empty) {
+          navigation.navigate('HomeClient');
+        } else {
+          const barberQuery = query(barbersRef, where("email", "==", user.email));
+          const barberSnapshot = await getDocs(barberQuery);
+  
+          if (!barberSnapshot.empty) {
+            navigation.navigate('HomeBarber');
+          } else {
+            throw new Error("E-mail não encontrado em nenhuma coleção");
+          }
+        }
       }
     } catch (error){
       alert("Erro ao fazer login: "+ error.message)
@@ -38,16 +51,16 @@ export default Login = () => {
   }
 
   const signIn = () => {
-    signInWithEmailAndPassword(auth,email,password)
-    .then((userCredencial)=>{
-      const user = userCredencial.user
-      handleLogin(user)
-      Alert.alert('Login realizado com sucesso')
-    })
-    .catch(error => {
-      console.error('Login não efetuado', error)
-    })
-  }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        handleLogin(user);
+        Alert.alert('Login realizado com sucesso');
+      })
+      .catch((error) => {
+        console.error('Login não efetuado', error);
+      });
+  };
 
 
 
