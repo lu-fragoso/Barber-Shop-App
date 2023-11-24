@@ -22,7 +22,6 @@ export default Login = () => {
 
   async function handleLogin(user){
     try{
-      const adminRef = collection(db, 'admin');
       const usersRef = collection(db, 'users');
       const barbersRef = collection(db, 'barbers');
   
@@ -64,8 +63,8 @@ export default Login = () => {
 
 
 
-  const navigateToClient = () => {
-      navigation.navigate('HomeClient'); 
+  const navigateToRecoverPassword = () => {
+      navigation.navigate('RecoveryPassword'); 
   };
   const navigateToSingUpClient = () => {
       navigation.navigate('SingUpClient'); 
@@ -113,12 +112,21 @@ export default Login = () => {
           </TouchableOpacity> 
         </View>
 
-        <View style={{ ...styles.button, width: 104, height: 45, left: 232, top: 647 }}>
+        <View style={{ ...styles.button, width: 104, height: 45, right: 32, top: 647 }}>
           <TouchableOpacity
             style={{ ...styles.button, width: 104, height: 45}}
             onPress={navigateToSingUpClient}
             >  
             <Text style={{ ...styles.loginText, left: 13, top: 10, fontSize: 20, }}>Register</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ ...styles.button, width: 104, height: 45, left: 32, top: 647 }}>
+          <TouchableOpacity
+            style={{ ...styles.button, width: 104, height: 45}}
+            onPress={navigateToRecoverPassword}
+            >  
+            <Text style={{ ...styles.loginText, left: 13, fontSize: 14, top: 5, alignItems:'center' }}>Recover your password</Text>
           </TouchableOpacity>
         </View>
       
