@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome'
-import { FlatList } from 'react-native-gesture-handler';
 import { db } from '../../../firebaseConfig';
-import { query, collection,getDocs } from 'firebase/firestore';
+import { collection,getDocs } from 'firebase/firestore';
 
 export default HomeAdmin = ({navigation}) => {
   const [users,setUsers] = useState([])
@@ -25,9 +22,6 @@ export default HomeAdmin = ({navigation}) => {
   },[])
 
 
-  const handleVoltar = () => {
-    navigation.goBack(); 
-  }; 
   
   return (
     <View style={styles.container}>

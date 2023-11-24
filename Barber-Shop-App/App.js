@@ -2,7 +2,7 @@ import Login from './src/views/public/login';
 
 import RegisterBarber from './src/views/admin/RegisterBarber'
 import Details from './src/views/admin/Details';
-import ChangePassword from './src/views/public/ChangePassword';
+import RecoveryPassword from './src/views/public/RecoveryPassword';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -21,7 +21,7 @@ function MyStackNavigator() {
       <Stack.Screen name="HomeAdmin" component={HomeAdmin} options={{ headerShown: false }}/>
       <Stack.Screen name="RegisterBarber" component={RegisterBarber} options={{ headerShown: false }}/>
       <Stack.Screen name="Details" component={Details} options={{ headerShown: false }}/>
-      <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ headerShown: false }}/>
+      <Stack.Screen name="RecoveryPassword" component={RecoveryPassword} options={{ headerShown: false }}/>
 
     </Stack.Navigator>
   );

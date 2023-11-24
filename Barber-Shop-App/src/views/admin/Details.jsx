@@ -5,29 +5,29 @@ import { collection, addDoc, getDocs, query, where, updateDoc, doc } from 'fireb
 import { db } from '../../../firebaseConfig';
 
 export default Details = ({navigation, route}) => {
-  const [name,setName] =(route.params.displayName)
-  const displayName = route.params.displayName
-  const uidUser = route.params.uid
+  const { uid, displayName } = route.params;
+  const [userData, setUserData] = useState(null);
+
+  console.log(uid)
+  console.log(displayName)
 
   useEffect(() => {
-    async function getUserByDisplayName() {
+    const fetchUserData = async () => {
       try {
-        const userQuery = query(collection(db, 'barber'), where('displayName', '==', displayName));
-        const userSnapshot = await getDocs(userQuery);
-  
-        if (!userSnapshot.empty) {
-          userSnapshot.forEach(doc => {
-            console.log('Dados do usuário:', doc.data());
-            // Agora você pode acessar os dados do usuário em doc.data()
-          });
+        const q = query(collection(db, 'barbers'), where('displayName', '==', displayName));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setUserData(userData);
         } else {
-          console.log('Usuário não encontrado');
+          console.log('Nenhum documento encontrado com o displayName:', displayName);
         }
       } catch (error) {
-        console.error('Erro ao buscar usuários', error.message);
+        console.error('Erro ao buscar dados do usuário:', error);
       }
-    }
-    getUserByDisplayName();
+    };
+  
+    fetchUserData();
   }, [displayName]);
 
   const handleVoltar = () => {
@@ -39,13 +39,13 @@ export default Details = ({navigation, route}) => {
       <View style={styles.rectangle}></View>
       <View style={styles.group}>
         <View style={styles.rectangle8}></View>
-        <Text style={styles.fullName}>Full Name</Text>
-        <Text style={styles.lucasGarciaFragoso}>{name}</Text>
+        <Text style={styles.title}>Full Name</Text>
+        <Text style={styles.fullName}>{userData?.displayName||'error'}</Text>
       </View>
       <View style={styles.group2}>
         <View style={styles.rectangle8}></View>
-        <Text style={styles.user}>User</Text>
-        <Text style={styles.lucasFragoso}></Text>
+        <Text style={styles.user}>E-mail</Text>
+        <Text style={styles.email}>{userData?.email||'error'}</Text>
       </View>
       
       <View style={styles.group4}>
@@ -95,9 +95,9 @@ const styles = StyleSheet.create({
     top: 34,
     left: 0,
   },
-  fullName: {
+  title: {
     width: 118,
-    height: 25,
+    height: 37,
     color: '#262626',
     fontSize: 24,
     //fontFamily: 'Inter',
@@ -107,11 +107,11 @@ const styles = StyleSheet.create({
     left: 83,
     textAlign: 'center',
   },
-  lucasGarciaFragoso: {
+  fullName: {
     width: 280,
     height: 25,
     color: '#262626',
-    fontSize: 24,
+    fontSize: 20,
     //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     left: 24,
   },
   user: {
-    width: 59,
+    width: 80,
     height: 37,
     color: '#262626',
     fontSize: 24,
@@ -136,11 +136,11 @@ const styles = StyleSheet.create({
     top: 0,
     left: 112,
   },
-  lucasFragoso: {
+  email: {
     width: 280,
     height: 37,
     color: '#262626',
-    fontSize: 24,
+    fontSize: 20,
     //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
