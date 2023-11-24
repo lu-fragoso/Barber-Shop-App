@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Alert ,Image, TouchableOpacity, TextInput, Keyb
 import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app, db } from './../../../firebaseConfig'
-import { collection, addDoc, getDoc, query, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, } from 'firebase/firestore';
 
 import HomeClient from '../client/HomeClient';
 import HomeBarber from '../barber/HomeBarber';
@@ -22,15 +22,27 @@ export default Login = () => {
 
   async function handleLogin(user){
     try{
-      const userRef = doc(db, 'barbers', user.uid);
-      const userSnapshot = await getDoc(userRef);
+      const usersRef = collection(db, 'users');
+      const barbersRef = collection(db, 'barbers');
   
       if (user.email === "admin@barber.br") {
         navigation.navigate('HomeAdmin');
-      } else if( userSnapshot.exists() ){
-        navigation.navigate('HomeBarber');
-      } else{
-        navigation.navigate('HomeClient'); 
+      } else {
+        const userQuery = query(usersRef, where("email", "==", user.email));
+        const userSnapshot = await getDocs(userQuery);
+  
+        if (!userSnapshot.empty) {
+          navigation.navigate('HomeClient');
+        } else {
+          const barberQuery = query(barbersRef, where("email", "==", user.email));
+          const barberSnapshot = await getDocs(barberQuery);
+  
+          if (!barberSnapshot.empty) {
+            navigation.navigate('HomeBarber');
+          } else {
+            throw new Error("E-mail não encontrado em nenhuma coleção");
+          }
+        }
       }
     } catch (error){
       alert("Erro ao fazer login: "+ error.message)
@@ -38,21 +50,21 @@ export default Login = () => {
   }
 
   const signIn = () => {
-    signInWithEmailAndPassword(auth,email,password)
-    .then((userCredencial)=>{
-      const user = userCredencial.user
-      handleLogin(user)
-      Alert.alert('Login realizado com sucesso')
-    })
-    .catch(error => {
-      console.error('Login não efetuado', error)
-    })
-  }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        handleLogin(user);
+        Alert.alert('Login realizado com sucesso');
+      })
+      .catch((error) => {
+        console.error('Login não efetuado', error);
+      });
+  };
 
 
 
-  const navigateToClient = () => {
-      navigation.navigate('HomeClient'); 
+  const navigateToRecoverPassword = () => {
+      navigation.navigate('RecoveryPassword'); 
   };
   const navigateToSingUpClient = () => {
       navigation.navigate('SingUpClient'); 
@@ -100,12 +112,21 @@ export default Login = () => {
           </TouchableOpacity> 
         </View>
 
-        <View style={{ ...styles.button, width: 104, height: 45, left: 232, top: 647 }}>
+        <View style={{ ...styles.button, width: 104, height: 45, right: 32, top: 647 }}>
           <TouchableOpacity
             style={{ ...styles.button, width: 104, height: 45}}
             onPress={navigateToSingUpClient}
             >  
             <Text style={{ ...styles.loginText, left: 13, top: 10, fontSize: 20, }}>Register</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={{ ...styles.button, width: 104, height: 45, left: 32, top: 647 }}>
+          <TouchableOpacity
+            style={{ ...styles.button, width: 104, height: 45}}
+            onPress={navigateToRecoverPassword}
+            >  
+            <Text style={{ ...styles.loginText, left: 13, fontSize: 14, top: 5, alignItems:'center' }}>Recover your password</Text>
           </TouchableOpacity>
         </View>
       
