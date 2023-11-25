@@ -1,17 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../../firebaseConfig';
 
 import ProfileClient from '../client/ProfileClient'
 import Scheduling from '../client/Scheduling'
 
-export default HomeClient = () => {
+export default HomeClient = ({navigation, route}) => {
+  const { email } = route.params;
+  const [userData, setUserData] = useState(null)
 
-  const navigation = useNavigation();
+  console.log(email)
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const q = query(collection(db, 'users'), where('email', '==', email));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setUserData(userData);
+        } else {
+          console.log('Nenhum documento encontrado com o email:', email);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+      }
+    };
+  
+    fetchUserData();
+  }, [email]);
+
+
   
   const navigateToProfileClient = () => {
-    navigation.navigate('ProfileClient');
+    navigation.navigate('ProfileClient',{displayName: userData.displayName});
   };
 
   const navigateToScheduling = () => {
@@ -39,8 +63,8 @@ export default HomeClient = () => {
       </View>
       
       <View style={styles.group11}>
-        <Text style={styles.welcome}>Welcome,</Text>
-        <Text style={styles.client}>Client!</Text>
+        <Text style={{...styles.welcomeText,top: 10}}>Welcome,</Text>
+        <Text style={{...styles.welcomeText,left: 100,fontSize: 32}}>{userData?.displayName||'error'}!</Text>
       </View>
       
       <View style={styles.group13}>
@@ -152,16 +176,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '400',
   },
-  welcome: {
+  welcomeText: {
     width: 198,
     height: 52,
+    color: '#F2DDB6',
+    fontSize: 24,
+    fontWeight: '400',
     position: 'absolute',
     top: 3,
     left: 0,
     textAlign: 'center',
-    color: '#F2DDB6',
-    fontSize: 24,
-    fontWeight: '400',
   },
   client: {
     width: 198,

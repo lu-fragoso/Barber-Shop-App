@@ -1,36 +1,61 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../../firebaseConfig';
 
-export default UserBarber = () => {
+export default UserBarber = ({navigation, route}) => {
+  const { displayName } = route.params;
+  const [userData, setUserData] = useState(null)
+  
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const q = query(collection(db, 'barbers'), where('displayName', '==', displayName));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setUserData(userData);
+        } else {
+          console.log('Nenhum documento encontrado com o displayName:', displayName);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+      }
+    };
+  
+    fetchUserData();
+  }, [displayName]);
+
+  
+  const handleVoltar = () => {
+    navigation.goBack(); 
+  };
+  
   return (
     <View style={styles.container}>
-      <View style={styles.rectangle7}></View>
-      <View style={styles.group13}>
+      <View style={styles.rectangle}></View>
+      <View style={styles.group}>
         <View style={styles.rectangle8}></View>
-        <Text style={styles.fullName}>Full Name</Text>
-        <Text style={styles.alanFaria}>Alan Faria</Text>
+        <Text style={styles.title}>Full Name</Text>
+        <Text style={styles.fullName}>{userData?.displayName||'error'}</Text>
       </View>
-      <View style={styles.group14}>
+      <View style={styles.group2}>
         <View style={styles.rectangle8}></View>
-        <Text style={styles.user}>User</Text>
-        <Text style={styles.alan}>alan</Text>
+        <Text style={styles.user}>E-mail</Text>
+        <Text style={styles.email}>{userData?.email||'error'}</Text>
       </View>
-      <View style={styles.group18}>
-        <View style={styles.rectangle8}></View>
-        <Text style={styles.password}>Password</Text>
-        <Text style={styles.passwordMask}>**********</Text>
-      </View>
-      <View style={styles.group4}>
-        <View style={styles.rectangle9}></View>
-        <Text style={styles.changePassword}>Change Password</Text>
-      </View>
-      <View style={styles.group19}>
-        <View style={styles.rectangle9}></View>
-        <Text style={styles.addBarber}>Add Barber</Text>
-      </View>
-      <View style={styles.vector1}></View>
-      <View style={styles.vector2}></View>
-      <View style={styles.vector3}></View>
+      
+      <Icon name="user" size={80} color='#F2DDB6' style={{...styles.vector2}}/>
+      
+      <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
+        <Icon name="chevron-right" size={40} color='#F2DDB6'  />
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={handleVoltar} style={{...styles.vector3}} >
+        <Icon name="home" size={40} color='#F2DDB6' />
+      </TouchableOpacity>
+
     </View>
   );
 }
@@ -42,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  rectangle7: {
+  rectangle: {
     width: 360,
     height: 588,
     backgroundColor: '#F2E8DC',
@@ -50,7 +75,7 @@ const styles = StyleSheet.create({
     top: 212,
     left: 0,
   },
-  group13: {
+  group: {
     width: 312,
     height: 81,
     position: 'absolute',
@@ -61,35 +86,35 @@ const styles = StyleSheet.create({
     width: 312,
     height: 47,
     backgroundColor: '#D9D9D9',
+    borderRadius: 10,
     position: 'absolute',
     top: 34,
     left: 0,
-    borderRadius: 10,
   },
-  fullName: {
+  title: {
     width: 118,
-    height: 25,
+    height: 37,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 0,
     left: 83,
     textAlign: 'center',
   },
-  alanFaria: {
+  fullName: {
     width: 280,
     height: 25,
     color: '#262626',
-    fontSize: 24,
-    fontFamily: 'Inter',
+    fontSize: 20,
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 45,
     left: 17,
   },
-  group14: {
+  group2: {
     width: 312,
     height: 84,
     position: 'absolute',
@@ -97,29 +122,28 @@ const styles = StyleSheet.create({
     left: 24,
   },
   user: {
-    width: 59,
+    width: 80,
     height: 37,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 0,
     left: 112,
-    textAlign: 'center',
   },
-  alan: {
+  email: {
     width: 280,
     height: 37,
     color: '#262626',
-    fontSize: 24,
-    fontFamily: 'Inter',
+    fontSize: 20,
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 42,
     left: 17,
   },
-  group18: {
+  group3: {
     width: 312,
     height: 84,
     position: 'absolute',
@@ -131,91 +155,63 @@ const styles = StyleSheet.create({
     height: 37,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 0,
     left: 84,
-    textAlign: 'center',
   },
-  passwordMask: {
+  passwordValue: {
     width: 280,
     height: 37,
     color: '#262626',
     fontSize: 24,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
     top: 42,
     left: 17,
   },
   group4: {
-    width: 122,
-    height: 52,
+    width: 197,
+    height: 58,
     position: 'absolute',
-    top: 718,
-    left: 215,
+    top: 707,
+    left: 80,
   },
   rectangle9: {
-    width: 122,
-    height: 52,
+    width: 197,
+    height: 58,
     backgroundColor: '#D98236',
+    borderRadius: 10,
     position: 'absolute',
     top: 0,
     left: 0,
-    borderRadius: 10,
   },
   changePassword: {
-    width: 110.23,
-    height: 25.10,
+    width: 178,
+    height: 28,
     color: 'white',
     fontSize: 20,
-    fontFamily: 'Inter',
+    //fontFamily: 'Inter',
     fontWeight: '400',
-    position: 'absolute',
-    top: 13.45,
-    left: 5.57,
     textAlign: 'center',
-  },
-  group19: {
-    width: 122,
-    height: 52,
     position: 'absolute',
-    top: 718,
-    left: 25,
-  },
-  addBarber: {
-    width: 110.23,
-    height: 25.10,
-    color: 'white',
-    fontSize: 20,
-    fontFamily: 'Inter',
-    fontWeight: '400',
-    position: 'absolute',
-    top: 13.45,
-    left: 5.57,
-    textAlign: 'center',
+    top: 15,
+    left: 9,
   },
   vector1: {
-    width: 30,
-    height: 43.60,
-    backgroundColor: '#F2DDB6',
     position: 'absolute',
     top: 22,
-    left: 305,
+    right: 23,
   },
   vector2: {
-    width: 65,
-    height: 65,
-    backgroundColor: '#F2DDB6',
     position: 'absolute',
+    justifyContent:'center',
     top: 115,
-    left: 147,
+    //left: 147,
   },
   vector3: {
-    width: 40,
-    height: 40,
-    backgroundColor: '#F2DDB6',
     position: 'absolute',
     top: 22,
     left: 23,

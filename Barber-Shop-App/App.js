@@ -18,11 +18,11 @@ function MyStackNavigator() {
       <Stack.Screen name="Scheduling" component={Scheduling} options={{ headerShown: false }}/>
       <Stack.Screen name="SingUpClient" component={SingUpClient} options={{ headerShown: false }}/>
       <Stack.Screen name="HomeBarber" component={HomeBarber} options={{ headerShown: false }}/>
+      <Stack.Screen name="UserBarber" component={UserBarber} options={{ headerShown: false }}/>
       <Stack.Screen name="HomeAdmin" component={HomeAdmin} options={{ headerShown: false }}/>
       <Stack.Screen name="RegisterBarber" component={RegisterBarber} options={{ headerShown: false }}/>
       <Stack.Screen name="Details" component={Details} options={{ headerShown: false }}/>
       <Stack.Screen name="RecoveryPassword" component={RecoveryPassword} options={{ headerShown: false }}/>
-
     </Stack.Navigator>
   );
 }
@@ -34,13 +34,4 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-//<Stack.Screen 
-//        name="NavigatorClient" 
-//        component={NavigatorClient}
-//      />
-//      <Stack.Screen 
-//        name="NavigatorBarber" 
-//        component={NavigatorBarber}
-//     />
     

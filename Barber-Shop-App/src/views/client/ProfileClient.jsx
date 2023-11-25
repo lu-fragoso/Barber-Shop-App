@@ -1,17 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { useNavigation } from '@react-navigation/native';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../../firebaseConfig';
 
-import HomeClient from './HomeClient';
+export default ProfileClient = ({navigation, route}) => {
+  const { displayName } = route.params;
+  const [userData, setUserData] = useState(null)
 
-export default ProfileClient = () => {
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const q = query(collection(db, 'users'), where('displayName', '==', displayName));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setUserData(userData);
+        } else {
+          console.log('Nenhum documento encontrado com o displayName:', displayName);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error);
+      }
+    };
   
-  const navigation = useNavigation();
-  
-  const navigateToHomeClient = () => {
-    navigation.navigate('HomeClient');
-  };
+    fetchUserData();
+  }, [displayName]);
+
   
   const handleVoltar = () => {
     navigation.goBack(); 
@@ -22,22 +37,13 @@ export default ProfileClient = () => {
       <View style={styles.rectangle}></View>
       <View style={styles.group}>
         <View style={styles.rectangle8}></View>
-        <Text style={styles.fullName}>Full Name</Text>
-        <Text style={styles.lucasGarciaFragoso}>Lucas Garcia Fragoso</Text>
+        <Text style={styles.title}>Full Name</Text>
+        <Text style={styles.fullName}>{userData?.displayName||'error'}</Text>
       </View>
       <View style={styles.group2}>
         <View style={styles.rectangle8}></View>
-        <Text style={styles.user}>User</Text>
-        <Text style={styles.lucasFragoso}>lucas.fragoso</Text>
-      </View>
-      <View style={styles.group3}>
-        <View style={styles.rectangle8}></View>
-        <Text style={styles.password}>Password</Text>
-        <Text style={styles.passwordValue}>**********</Text>
-      </View>
-      <View style={styles.group4}>
-        <View style={styles.rectangle9}/>
-        <Text style={styles.changePassword}>Change Password</Text>
+        <Text style={styles.user}>E-mail</Text>
+        <Text style={styles.email}>{userData?.email||'error'}</Text>
       </View>
       
       <Icon name="user" size={80} color='#F2DDB6' style={{...styles.vector2}}/>
@@ -46,7 +52,7 @@ export default ProfileClient = () => {
         <Icon name="chevron-right" size={40} color='#F2DDB6'  />
       </TouchableOpacity>
       
-      <TouchableOpacity onPress={navigateToHomeClient} style={{...styles.vector3}} >
+      <TouchableOpacity onPress={handleVoltar} style={{...styles.vector3}} >
         <Icon name="home" size={40} color='#F2DDB6' />
       </TouchableOpacity>
 
@@ -85,9 +91,9 @@ const styles = StyleSheet.create({
     top: 34,
     left: 0,
   },
-  fullName: {
+  title: {
     width: 118,
-    height: 25,
+    height: 37,
     color: '#262626',
     fontSize: 24,
     //fontFamily: 'Inter',
@@ -97,11 +103,11 @@ const styles = StyleSheet.create({
     left: 83,
     textAlign: 'center',
   },
-  lucasGarciaFragoso: {
+  fullName: {
     width: 280,
     height: 25,
     color: '#262626',
-    fontSize: 24,
+    fontSize: 20,
     //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
@@ -116,7 +122,7 @@ const styles = StyleSheet.create({
     left: 24,
   },
   user: {
-    width: 59,
+    width: 80,
     height: 37,
     color: '#262626',
     fontSize: 24,
@@ -126,11 +132,11 @@ const styles = StyleSheet.create({
     top: 0,
     left: 112,
   },
-  lucasFragoso: {
+  email: {
     width: 280,
     height: 37,
     color: '#262626',
-    fontSize: 24,
+    fontSize: 20,
     //fontFamily: 'Inter',
     fontWeight: '400',
     position: 'absolute',
