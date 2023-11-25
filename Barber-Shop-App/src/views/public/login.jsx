@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert ,Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform} from 'react-native'
-import { useNavigation } from '@react-navigation/native';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { app, db } from './../../../firebaseConfig'
 import { collection, getDocs, query, where, } from 'firebase/firestore';
@@ -11,14 +10,13 @@ import HomeAdmin from '../admin/HomeAdmin';
 import SingUpClient from '../client/SingUpClient';
 
 
-export default Login = () => {
+export default Login = ({navigation}) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const auth = getAuth(app); 
   
-  const navigation = useNavigation();
 
   async function handleLogin(user){
     try{
@@ -32,13 +30,13 @@ export default Login = () => {
         const userSnapshot = await getDocs(userQuery);
   
         if (!userSnapshot.empty) {
-          navigation.navigate('HomeClient');
+          navigation.navigate('HomeClient', {email: user.email});
         } else {
           const barberQuery = query(barbersRef, where("email", "==", user.email));
           const barberSnapshot = await getDocs(barberQuery);
   
           if (!barberSnapshot.empty) {
-            navigation.navigate('HomeBarber');
+            navigation.navigate('HomeBarber',{email: user.email});
           } else {
             throw new Error("E-mail não encontrado em nenhuma coleção");
           }
@@ -55,6 +53,8 @@ export default Login = () => {
         const user = userCredential.user;
         handleLogin(user);
         Alert.alert('Login realizado com sucesso');
+        setEmail('')
+        setPassword('')
       })
       .catch((error) => {
         console.error('Login não efetuado', error);
