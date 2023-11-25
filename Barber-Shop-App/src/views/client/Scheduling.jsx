@@ -1,15 +1,20 @@
 import React, { useEffect, useState}  from 'react';
-import { View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Button, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default Scheduling = ({navigation, route}) => {
   const { displayName } = route.params;
   const [userData, setUserData] = useState(null);  
   const [barbes, setBarbers] = useState([]);
   const [selected, setSelected] = useState([]);
+  const [date, setDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -48,6 +53,61 @@ export default Scheduling = ({navigation, route}) => {
 
   }, [])
 
+
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate ? new Date(selectedDate) : date;
+    setShow(Platform.OS === 'ios');
+  
+    // Verifica se o modo atual é 'time'
+    if (mode === 'time') {
+      // Extrai as horas e minutos da data selecionada
+      const hours = currentDate.getHours();
+      const minutes = currentDate.getMinutes();
+  
+      // Verifica se o tempo selecionado está dentro do intervalo permitido
+      if (hours < 8 || (hours === 19 && minutes > 0) || hours > 19) {
+        // Se o tempo selecionado não está dentro do intervalo permitido,
+        // não atualiza o estado selectedTime
+        Alert.alert("Horário inválido", "Por favor, selecione um horário entre 8:00 e 19:00.");
+      } else if (minutes !== 0 && minutes !== 30) {
+        // Se os minutos não são 0 ou 30, não atualiza o estado selectedTime
+        Alert.alert("Horário inválido", "Por favor, selecione um horário que seja múltiplo de 30 minutos.");
+      } else {
+        // Se o tempo selecionado está dentro do intervalo permitido,
+        // atualiza o estado selectedTime
+        setSelectedTime(currentDate);
+      }
+    } else {
+      setDate(currentDate);
+    }
+  };
+
+  const showMode = (currentMode) => {
+    if (currentMode === 'time') {
+      Alert.alert(
+        "Appointment hours",
+        "Please select a time between 8:00 am and 7:00 pm.",
+        [
+          { text: "OK", onPress: () => setShow(true) }
+        ],
+        { cancelable: false }
+      );
+    } else {
+      setShow(true);
+    }
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
+
+
   const handleVoltar = () => {
     navigation.goBack(); 
   };
@@ -82,7 +142,42 @@ export default Scheduling = ({navigation, route}) => {
             notFoundText='Barber not found!'
             inputStyles={{fontWeight:'bold',color:'white'}}
             />
-          </View>     
+          </View> 
+
+          <Text style={[styles.Texting,{ marginTop: 30 }]}>Selected date: {date.toLocaleDateString()}</Text>
+          <Text style={[styles.Texting,{ marginTop: 10 }]}>Selected time: {selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</Text>
+
+          <View style={{top: 15}}>
+          
+            <View style={{top: 15, marginBottom: 10}}> 
+              <Button onPress={showDatepicker} title="Show date picker!" />
+            </View>
+
+            <View style={{top: 15, marginBottom: 10}}>  
+              <Button onPress={showTimepicker} title="Show time picker!" />
+            </View>
+            {show && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode={mode}
+                is24Hour={false}
+                display="default"
+                onChange={onChange}
+                minimumDate={new Date()}
+              />
+            )}
+
+            <View style={{top: 15, marginBottom: 10}}>
+              <Button title="Schedule" onPress={() => {
+                // Aqui você pode salvar a data e hora selecionadas no seu banco de dados
+                console.log('Selected date:', date.toLocaleDateString());
+                console.log('Selected time:', date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }));
+              }} />
+            </View>
+          
+          </View> 
+      
       </View>
           
           
