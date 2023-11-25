@@ -1,20 +1,53 @@
 import React, { useEffect, useState}  from 'react';
-import { View, Text, TouchableOpacity, StyleSheet,TextInput, Pressable, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { useNavigation } from '@react-navigation/native';
 import { SelectList } from 'react-native-dropdown-select-list'
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../../firebaseConfig';
 
-import HomeClient from './HomeClient';
-
-export default Scheduling = () => {
- 
+export default Scheduling = ({navigation, route}) => {
+  const { displayName } = route.params;
+  const [userData, setUserData] = useState(null);  
+  const [barbes, setBarbers] = useState([]);
   const [selected, setSelected] = useState([]);
-  const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const q = query(collection(db, 'users'), where('displayName', '==', displayName));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setUserData(userData);
+        } else {
+          console.log('No documents found with displayName:', displayName);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
   
-  const navigateToHomeClient = () => {
-    navigation.navigate('HomeClient');
-  };
-  
+    fetchUserData();
+  }, [displayName]);
+
+  useEffect(()=>{
+    async function getBarbers(){
+      try {
+        const q = query(collection(db, 'barbers'));
+        const usersDocs = await getDocs(q);
+        const barbersData = [];
+        usersDocs.forEach((doc) => {
+          barbersData.push(doc.data().displayName); 
+        });
+        setBarbers(barbersData);
+      } catch (error) {
+        alert('Error when searching for Barbers ' + error.message);
+      }
+    }
+    getBarbers();
+
+  }, [])
+
   const handleVoltar = () => {
     navigation.goBack(); 
   };
@@ -23,19 +56,12 @@ export default Scheduling = () => {
     console.log('Agendamento concluido')
   };
 
-  
-  const profissionais = [
-    {key:'1', value:'Alan'},
-    {key:'2', value:'Andre'},
-    {key:'3', value:'Jose'},
-  ]   
-
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
         <Icon name="chevron-right" size={40} color='#F2DDB6'  />
       </TouchableOpacity>
-      <TouchableOpacity onPress={navigateToHomeClient} style={{...styles.vector2}} >
+      <TouchableOpacity onPress={handleVoltar} style={{...styles.vector2}} >
         <Icon name="home" size={40} color='#F2DDB6' />
       </TouchableOpacity>
       <Text style={styles.scheduling}>Scheduling</Text>
@@ -46,7 +72,7 @@ export default Scheduling = () => {
           <View style={{top: 15}}>
             <SelectList 
             setSelected={(val) => setSelected(val)} 
-            data={profissionais} 
+            data={barbes} 
             placeholder='Selecte your Barber'
             boxStyles={{backgroundColor:'#3F3939', fontSize:16, color: 'white'}}
             dropdownStyles={{backgroundColor:'#3F3939'}}

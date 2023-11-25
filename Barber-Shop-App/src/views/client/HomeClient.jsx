@@ -39,7 +39,7 @@ export default HomeClient = ({navigation, route}) => {
   };
 
   const navigateToScheduling = () => {
-    navigation.navigate('Scheduling');
+    navigation.navigate('Scheduling', {displayName: userData.displayName});
   };
 
   const handleVoltar = () => {
