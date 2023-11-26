@@ -2,7 +2,7 @@ import React, { useEffect, useState}  from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Button, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, addDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -69,10 +69,10 @@ export default Scheduling = ({navigation, route}) => {
       if (hours < 8 || (hours === 19 && minutes > 0) || hours > 19) {
         // Se o tempo selecionado não está dentro do intervalo permitido,
         // não atualiza o estado selectedTime
-        Alert.alert("Horário inválido", "Por favor, selecione um horário entre 8:00 e 19:00.");
+        Alert.alert("Invalid time", "Please select a time between 8:00 am and 7:00 pm.");
       } else if (minutes !== 0 && minutes !== 30) {
         // Se os minutos não são 0 ou 30, não atualiza o estado selectedTime
-        Alert.alert("Horário inválido", "Por favor, selecione um horário que seja múltiplo de 30 minutos.");
+        Alert.alert("Invalid time", "Please select a time every 30 minutes.");
       } else {
         // Se o tempo selecionado está dentro do intervalo permitido,
         // atualiza o estado selectedTime
@@ -107,13 +107,47 @@ export default Scheduling = ({navigation, route}) => {
     showMode('time');
   };
 
+  const scheduleAppointment = async () => {
+
+    console.log('Selected date:', date.toLocaleDateString());
+    console.log('Selected time:', selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }));
+    console.log('User:', userData.displayName);
+    console.log(selected)
+    
+    try {
+      // Verifica se o horário já está agendado
+      const q = query(
+        collection(db, 'appointment'),
+        where("date", "==", date.toLocaleDateString()),
+        where("time", "==", selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })),
+        where("barber", "==", selected)
+      );
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        Alert.alert('This time is already scheduled.', `This time has already been scheduled with ${selected}. Please choose another time.  `);
+        return;
+      }
+  
+      const appointmentData = {
+        date: date.toLocaleDateString(),
+        time: selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
+        barber: selected,
+        user: userData.displayName,
+      };
+      await addDoc(collection(db, 'appointment'), appointmentData)
+  
+      Alert.alert('Scheduling completed');
+      setSelectedTime(new Date())
+      setSelected('')
+    } catch (error) {
+      Alert.alert('Error scheduling appointment:', error);
+    }
+  
+  };
 
   const handleVoltar = () => {
     navigation.goBack(); 
-  };
-
-  const handleAgendar = () => {
-    console.log('Agendamento concluido')
   };
 
   return (
@@ -169,21 +203,12 @@ export default Scheduling = ({navigation, route}) => {
             )}
 
             <View style={{top: 15, marginBottom: 10}}>
-              <Button title="Schedule" onPress={() => {
-                // Aqui você pode salvar a data e hora selecionadas no seu banco de dados
-                console.log('Selected date:', date.toLocaleDateString());
-                console.log('Selected time:', date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }));
-              }} />
+              <Button title="Schedule" onPress={scheduleAppointment} />
             </View>
           
           </View> 
       
       </View>
-          
-          
-          
-     
-      
      
     </View>
   );
@@ -259,29 +284,3 @@ const styles = StyleSheet.create({
     left: 23,
   },
 });
-
-
-
-
-
-
-//{options.map((op, index)=>(
-//  <View style = {styles.optionBarber}>
-//    <TouchableOpacity 
-//    style={styles.options}
-//    onPress={()=> toggle(op?.id)}>
-//      
-//      {selected.findIndex(i => i === id) !== -1 ? (<Icon name='check-bold' color={'#3EBD93'} size={20} />) : null}
-//    
-//    </TouchableOpacity>
-//    <Text style={styles.optext}>{op?.text}</Text>
-//  
-//  </View>
-//   ))}
-
-
-
-//<View style={styles.group}>
-//        <View style={styles.rectangle}></View>
-//        <Text style={styles.scheduleText}>Schedule your appointment !</Text>
-//      </View>
