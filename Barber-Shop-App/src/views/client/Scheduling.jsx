@@ -2,7 +2,7 @@ import React, { useEffect, useState}  from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Button, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { collection, getDocs, query, where, addDoc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, addDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -11,8 +11,8 @@ export default Scheduling = ({navigation, route}) => {
   const [userData, setUserData] = useState(null);  
   const [barbes, setBarbers] = useState([]);
   const [selected, setSelected] = useState([]);
-  const [date, setDate] = useState(new Date());
-  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [date, setDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
@@ -109,6 +109,21 @@ export default Scheduling = ({navigation, route}) => {
 
   const scheduleAppointment = async () => {
 
+    if (!selected || selected == '' ) {
+      Alert.alert('Please select a barber.');
+      return;
+    }
+
+    if (!date || date == '' ) {
+      Alert.alert('Please select a day.');
+      return;
+    }
+    
+    if (!selectedTime || selectedTime == '' ) {
+      Alert.alert('Please select a time.');
+      return;
+    }
+
     console.log('Selected date:', date.toLocaleDateString());
     console.log('Selected time:', selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }));
     console.log('User:', userData.displayName);
@@ -135,11 +150,15 @@ export default Scheduling = ({navigation, route}) => {
         barber: selected,
         user: userData.displayName,
       };
+
       await addDoc(collection(db, 'appointment'), appointmentData)
   
       Alert.alert('Scheduling completed');
-      setSelectedTime(new Date())
-      setSelected('')
+      
+      setDate(null)
+      setSelectedTime(null)
+      setSelected(null)
+
     } catch (error) {
       Alert.alert('Error scheduling appointment:', error);
     }
@@ -147,6 +166,9 @@ export default Scheduling = ({navigation, route}) => {
   };
 
   const handleVoltar = () => {
+    setDate(null)
+    setSelectedTime(null)
+     setSelected(null)
     navigation.goBack(); 
   };
 
@@ -165,9 +187,11 @@ export default Scheduling = ({navigation, route}) => {
         <Text style={styles.Texting}> Select your barber</Text>
           <View style={{top: 15}}>
             <SelectList 
+            key={selected}
             setSelected={(val) => setSelected(val)} 
             data={barbes} 
             placeholder='Selecte your Barber'
+            defaultValue='Selecte your Barber'
             boxStyles={{backgroundColor:'#3F3939', fontSize:16, color: 'white'}}
             dropdownStyles={{backgroundColor:'#3F3939'}}
             dropdownItemStyles={{marginHorizontal:10}}
@@ -178,8 +202,8 @@ export default Scheduling = ({navigation, route}) => {
             />
           </View> 
 
-          <Text style={[styles.Texting,{ marginTop: 30 }]}>Selected date: {date.toLocaleDateString()}</Text>
-          <Text style={[styles.Texting,{ marginTop: 10 }]}>Selected time: {selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</Text>
+          <Text style={[styles.Texting,{ marginTop: 30 }]}>Selected date: {date ? date.toLocaleDateString() : 'MM/DD/YYYY'}</Text>
+          <Text style={[styles.Texting,{ marginTop: 10 }]}>Selected time: {selectedTime ? selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : '--:--'}</Text>
 
           <View style={{top: 15}}>
           
@@ -193,7 +217,7 @@ export default Scheduling = ({navigation, route}) => {
             {show && (
               <DateTimePicker
                 testID="dateTimePicker"
-                value={date}
+                value={date || new Date()}
                 mode={mode}
                 is24Hour={false}
                 display="default"
