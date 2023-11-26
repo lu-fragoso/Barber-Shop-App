@@ -39,7 +39,7 @@ export default HomeClient = ({navigation, route}) => {
   };
 
   const navigateToScheduling = () => {
-    navigation.navigate('Scheduling');
+    navigation.navigate('Scheduling', {displayName: userData.displayName});
   };
 
   const handleVoltar = () => {
@@ -64,7 +64,7 @@ export default HomeClient = ({navigation, route}) => {
       
       <View style={styles.group11}>
         <Text style={{...styles.welcomeText,top: 10}}>Welcome,</Text>
-        <Text style={{...styles.welcomeText,left: 100,fontSize: 32}}>{userData?.displayName||'error'}!</Text>
+        <Text style={{...styles.welcomeText,left: 100,fontSize: 32}}> {userData?.displayName.split(' ')[0]||'error'}!</Text>
       </View>
       
       <View style={styles.group13}>
