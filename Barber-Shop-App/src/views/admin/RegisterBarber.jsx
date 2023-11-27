@@ -33,10 +33,10 @@ export default RegisterBarber = () => {
             uid: uid, 
           });
           console.log('Document written with ID: ', docRef.id);
-          Alert.alert('Usuário ' + displayName + ' cadastrado com sucesso!');
+          Alert.alert('User ' + displayName + ' registered successfully!');
           navigateToSignIn();
         } catch (error) {
-          console.error('Erro no SignUp:', error);
+          console.error('SignUp error:', error);
         }
       };
 

@@ -20,10 +20,10 @@ export default Details = ({navigation, route}) => {
           const userData = querySnapshot.docs[0].data();
           setUserData(userData);
         } else {
-          console.log('Nenhum documento encontrado com o displayName:', displayName);
+          console.log('No documents found with displayName:', displayName);
         }
       } catch (error) {
-        console.error('Erro ao buscar dados do usuário:', error);
+        console.error('Error fetching user data:', error);
       }
     };
   

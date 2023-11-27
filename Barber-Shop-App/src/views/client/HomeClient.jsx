@@ -11,7 +11,7 @@ export default HomeClient = ({navigation, route}) => {
   const { email } = route.params;
   const [userData, setUserData] = useState(null)
 
-  console.log(email)
+  //console.log(email)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -22,10 +22,10 @@ export default HomeClient = ({navigation, route}) => {
           const userData = querySnapshot.docs[0].data();
           setUserData(userData);
         } else {
-          console.log('Nenhum documento encontrado com o email:', email);
+          console.log('No documents found with email:', email);
         }
       } catch (error) {
-        console.error('Erro ao buscar dados do usuário:', error);
+        console.error('Error fetching user data:', error);
       }
     };
   

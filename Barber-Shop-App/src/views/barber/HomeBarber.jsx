@@ -43,10 +43,10 @@ export default HomeBarber = ({navigation,route}) => {
           const userData = querySnapshot.docs[0].data();
           setUserData(userData);
         } else {
-          console.log('Nenhum documento encontrado com o email:', email);
+          console.log('No documents found with email:', email);
         }
       } catch (error) {
-        console.error('Erro ao buscar dados do usuário:', error);
+        console.error('Error fetching user data:', error);
       }
     };
     
