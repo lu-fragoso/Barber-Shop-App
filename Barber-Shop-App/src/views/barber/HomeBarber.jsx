@@ -1,17 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { FlatList } from 'react-native-gesture-handler';
 
 import UserBarber from '../barber/UserBarber';
 
+function convertTo24Hour(time) {
+  const [main, modifier] = time.split(' ');
+  let [hours, minutes] = main.split(':');
+
+  if (hours === '12') {
+    hours = '00';
+  }
+
+  if (modifier.toLowerCase() === 'pm') {
+    hours = parseInt(hours, 10) + 12;
+  }
+
+  const newTime = `${hours}:${minutes}`;
+  //console.log(`Converted ${time} to ${newTime}`);
+  return newTime;
+}
 export default HomeBarber = ({navigation,route}) => {
   const { email } = route.params;
   const [userData, setUserData] = useState(null)
+  const [appointments, setAppointments] = useState([]);
 
-  console.log(email)
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
+  //console.log(email)
+  
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -27,9 +49,42 @@ export default HomeBarber = ({navigation,route}) => {
         console.error('Erro ao buscar dados do usuário:', error);
       }
     };
-  
+    
     fetchUserData();
   }, [email]);
+  
+  //console.log(userData.displayName)
+  const fetchAppointments = async () => {
+    const dateKey = date.toLocaleDateString();
+    const appointmentsRef = collection(db, 'appointment');
+    const q = query(appointmentsRef, where('barber', '==', userData.displayName));
+    const appointmentSnap = await getDocs(q);
+    
+    const appointmentsForDate = appointmentSnap.docs
+      .map(doc => doc.data())
+      .filter(appointment => appointment.date === dateKey);
+  
+    setAppointments(appointmentsForDate);
+  };
+
+useEffect(() => {
+  fetchAppointments();
+}, [date]);
+
+const onChange = (event, selectedDate) => {
+  const currentDate = selectedDate || date;
+  setDate(currentDate);
+  setShowDatePicker(false);
+};
+
+const sortedAppointments = [...appointments].sort((a, b) => {
+  const timeA = convertTo24Hour(a.time);
+  const timeB = convertTo24Hour(b.time);
+  const [hoursA, minutesA] = timeA.split(':').map(Number);
+  const [hoursB, minutesB] = timeB.split(':').map(Number);
+  return hoursA - hoursB || minutesA - minutesB;
+});
+//console.log(sortedAppointments);
 
 
   const navigateToUserBarber = () => {
@@ -43,23 +98,49 @@ export default HomeBarber = ({navigation,route}) => {
   return (
     <View style={styles.container}>
       <View style={styles.rectangle7}></View>
+      
       <View style={styles.group11}>
         <Text style={{...styles.welcomeText,top: 10}}>Welcome,</Text>
         <Text style={{...styles.welcomeText,left: 135,fontSize: 32}}>{userData?.displayName||'error'}!</Text>
       </View>
+      
       <Text style={styles.yourScheduledJobs}>Your scheduled jobs</Text>
+      
       <View style={styles.schedule}>
-        <View style={styles.rectangle11}></View>
-        <View style={styles.rectangle12}></View>
-        <Text style={styles.name}>Name</Text>
-        <Text style={styles.lucas}>Lucas</Text>
-        <Text style={{...styles.h, top:66}}>13 H</Text>
-        <Text style={styles.carlos}>Carlos</Text>
-        <Text style={{...styles.h, top:113}}>14 H</Text>
-        <Text style={styles.scheduleText}>Schedule</Text>
-        <View style={styles.line1}></View>
-        <View style={styles.line2}></View>
+       
+        <View style={styles.rectangle12}>
+          <Text style = {styles.selectDate }>{date.toLocaleDateString()}</Text>
+        </View>
+        
+        <View style={styles.rectangle11}>
+          <FlatList
+             data={sortedAppointments}
+             keyExtractor={(item) => item.time}
+             renderItem={({ item }) => (
+               <View style={styles.viewuser}> 
+               <Text style={styles.users}> {item.user} - {item.time}</Text>
+               </View>  
+               )}
+           />
+        </View>
+       
+      
       </View>
+      
+      <View style={{position: 'absolute', bottom: 30, width: '50%'}}> 
+        <Button onPress={() => setShowDatePicker(true)} title="Choose the date!" />
+      </View>
+
+      {showDatePicker && (
+      <DateTimePicker
+        value={date}
+        mode="date"
+        display="default"
+        onChange={onChange}
+      />
+    )}
+
+
       
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
         <Icon name="chevron-right" size={40} color='#F2DDB6'  />
@@ -107,6 +188,24 @@ const styles = StyleSheet.create({
     left: 0,
     textAlign: 'center',
   },
+  users: {
+    width: '90%',
+    alignContent: 'center',
+    backgroundColor:'#f5f5f5cf',
+    padding: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 5,
+    margin: 15,
+    color: '#3F3939',
+    textAlign: 'auto',
+    fontWeight: 'bold',
+  },
+  viewuser: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
   barber: {
     width: 148,
     height: 52,
@@ -139,7 +238,7 @@ const styles = StyleSheet.create({
   },
   rectangle11: {
     width: 267,
-    height: 432,
+    height: 350,
     backgroundColor: '#D9D9D9',
     position: 'absolute',
     top: 0,
@@ -150,8 +249,19 @@ const styles = StyleSheet.create({
     height: 48,
     backgroundColor: '#3F3939',
     position: 'absolute',
-    top: 0,
+    top: -48,
     left: 0,
+    zIndex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectDate: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: '700',
+    position: 'absolute',
+    justifyContent: 'center',
+    textAlign: 'center',
   },
   name: {
     color: 'white',
