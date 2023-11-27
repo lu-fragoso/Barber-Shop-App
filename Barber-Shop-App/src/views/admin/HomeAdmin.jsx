@@ -15,7 +15,7 @@ export default HomeAdmin = ({navigation}) => {
         const usersData = usersSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
         setUsers(usersData)
       } catch (error) {
-        console.error('Erro ao buscar usuários', error.message)
+        console.error('Error when searching for users', error.message)
       }
     }
     listUsers()
@@ -60,7 +60,7 @@ export default HomeAdmin = ({navigation}) => {
       style={{...styles.button, right: 20,bottom: 30}}
       onPress={()=>navigation.navigate('RegisterBarber')}>
         <View style={{...styles.button, backgroundColor: '#3F3939',}}/>
-        <Text style={{color: 'white'}}>Add Barber</Text>
+        <Text style={styles.addBarber}>Add Barber</Text>
 
       </TouchableOpacity>
     </View>
@@ -99,6 +99,13 @@ const styles = StyleSheet.create({
     top: 3,
     left: 0,
     textAlign: 'center',
+  },
+  addBarber:{
+    color: '#FFFFFF',
+    fontSize: 20, 
+    textAlign: 'center', 
+    padding: 10, 
+    fontWeight: 'bold',
   },
   barber: {
     width: 148,

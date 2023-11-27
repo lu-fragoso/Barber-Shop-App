@@ -38,12 +38,12 @@ export default Login = ({navigation}) => {
           if (!barberSnapshot.empty) {
             navigation.navigate('HomeBarber',{email: user.email});
           } else {
-            throw new Error("E-mail não encontrado em nenhuma coleção");
+            throw new Error("Email not found in any collection");
           }
         }
       }
     } catch (error){
-      alert("Erro ao fazer login: "+ error.message)
+      alert("Error when logging in: "+ error.message)
     }
   }
 
@@ -52,12 +52,12 @@ export default Login = ({navigation}) => {
       .then((userCredential) => {
         const user = userCredential.user;
         handleLogin(user);
-        Alert.alert('Login realizado com sucesso');
+        Alert.alert('Login successfully');
         setEmail('')
         setPassword('')
       })
       .catch((error) => {
-        console.error('Login não efetuado', error);
+        Alert.alert('Login not performed', error);
       });
   };
 
