@@ -48,11 +48,6 @@ export default Details = ({navigation, route}) => {
         <Text style={styles.email}>{userData?.email||'error'}</Text>
       </View>
       
-      <View style={styles.group4}>
-        <View style={styles.rectangle9}/>
-        <Text style={styles.changePassword}>Change Password</Text>
-      </View>
-      
       <Icon name="user" size={80} color='#F2DDB6' style={{...styles.vector2}}/>
       
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
