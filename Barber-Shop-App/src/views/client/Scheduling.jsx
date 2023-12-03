@@ -38,7 +38,7 @@ export default Scheduling = ({navigation, route}) => {
   useEffect(()=>{
     async function getBarbers(){
       try {
-        const q = query(collection(db, 'barbers'));
+        const q = query(collection(db, 'barbers'), where('isActive', '==', true));
         const usersDocs = await getDocs(q);
         const barbersData = [];
         usersDocs.forEach((doc) => {
@@ -208,11 +208,11 @@ export default Scheduling = ({navigation, route}) => {
           <View style={{top: 15}}>
           
             <View style={{top: 15, marginBottom: 10}}> 
-              <Button onPress={showDatepicker} title="Choose a day!" />
+              <Button onPress={showDatepicker} title="Choose a day!" color={'#D9A78B'} />
             </View>
 
             <View style={{top: 15, marginBottom: 10}}>  
-              <Button onPress={showTimepicker} title="Choose a time!" />
+              <Button onPress={showTimepicker} title="Choose a time!" color={'#D9A78B'}/>
             </View>
             {show && (
               <DateTimePicker
@@ -227,7 +227,7 @@ export default Scheduling = ({navigation, route}) => {
             )}
 
             <View style={{top: 15, marginBottom: 10}}>
-              <Button title="Schedule" onPress={scheduleAppointment} />
+              <Button title="Schedule" onPress={scheduleAppointment} color={'#D98236'} />
             </View>
           
           </View> 
