@@ -31,6 +31,7 @@ export default RegisterBarber = () => {
             email: email,
             displayName: displayName,
             uid: uid, 
+            isActive: true
           });
           console.log('Document written with ID: ', docRef.id);
           Alert.alert('User ' + displayName + ' registered successfully!');
