@@ -1,12 +1,13 @@
 import React, { useState, useEffect} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Button, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { collection, addDoc, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
 
 export default Details = ({navigation, route}) => {
   const { uid, displayName } = route.params;
   const [userData, setUserData] = useState(null);
+  const [isBarberActive, setIsBarberActive] = useState(false);
 
   console.log(uid)
   console.log(displayName)
@@ -18,6 +19,7 @@ export default Details = ({navigation, route}) => {
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
+          setIsBarberActive(userData.isActive);
           setUserData(userData);
         } else {
           console.log('No documents found with displayName:', displayName);
@@ -29,6 +31,69 @@ export default Details = ({navigation, route}) => {
   
     fetchUserData();
   }, [displayName]);
+
+
+  const deleteBarber = async () => {
+    Alert.alert(
+      "Delete Barber",
+      `Are you sure you want to delete barber ${displayName}?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        { 
+          text: "OK", 
+          onPress: async () => {
+            try {
+              const q = query(collection(db, 'barbers'), where('displayName', '==', displayName));
+              const querySnapshot = await getDocs(q);
+              if (!querySnapshot.empty) {
+                const barberDoc = querySnapshot.docs[0];
+      
+                // Delete the barber document
+                await deleteDoc(barberDoc.ref);
+                navigation.navigate('HomeAdmin');
+                console.log('Barber deleted successfully');
+              } else {
+                console.log('No documents found with displayName:', displayName);
+              }
+            } catch (error) {
+              console.error('Error deleting barber:', error);
+            }
+          }
+        }
+      ]
+    );
+  };
+  
+  const toggleBarberActiveStatus = async () => {
+    try {
+      const q = query(collection(db, 'barbers'), where('displayName', '==', displayName));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const barberDoc = querySnapshot.docs[0];
+        const currentStatus = barberDoc.data().isActive;
+        await updateDoc(barberDoc.ref, { isActive: !currentStatus });
+        setIsBarberActive(!currentStatus);
+        
+        if (!currentStatus) {
+          Alert.alert("Success", `${displayName} has been activated.`);
+        } else {
+          Alert.alert("Success", `${displayName} has been deactivated.`);
+        }
+
+        console.log('Barber active status toggled successfully');
+      } else {
+        console.log('No documents found with displayName:', displayName);
+      }
+    } catch (error) {
+      console.error('Error toggling barber active status:', error);
+    }
+  };
+
+
+
 
   const handleVoltar = () => {
     navigation.goBack(); 
@@ -54,6 +119,23 @@ export default Details = ({navigation, route}) => {
         <Icon name="chevron-right" size={40} color='#F2DDB6'  />
       </TouchableOpacity>
 
+      <View style={{position: 'absolute', bottom: 30, width: '40%', right: 24}}> 
+        <Button 
+          title="Delete Barber" 
+          onPress={async () => {
+            await deleteBarber();
+          }}
+          color={'red'} 
+        />
+      </View>
+
+      <View style={{position: 'absolute', bottom: 30, width: '40%', left: 24}}> 
+        <Button
+          title={isBarberActive ? "Desative Barber" : "Active Barber"}
+          onPress={toggleBarberActiveStatus}
+          color={'#D98236'}
+        />
+      </View>
 
     </View>
   );
