@@ -101,7 +101,7 @@ const sortedAppointments = [...appointments].sort((a, b) => {
       
       <View style={styles.group11}>
         <Text style={{...styles.welcomeText,top: 10}}>Welcome,</Text>
-        <Text style={{...styles.welcomeText,left: 135,fontSize: 32}}>{userData?.displayName||'error'}!</Text>
+        <Text style={{...styles.welcomeText,left: 100,fontSize: 32}}>{userData?.displayName.split(' ')[0]||'error'}!</Text>
       </View>
       
       <Text style={styles.yourScheduledJobs}>Your scheduled jobs</Text>
@@ -128,7 +128,7 @@ const sortedAppointments = [...appointments].sort((a, b) => {
       </View>
       
       <View style={{position: 'absolute', bottom: 30, width: '50%'}}> 
-        <Button onPress={() => setShowDatePicker(true)} title="Choose the date!" />
+        <Button onPress={() => setShowDatePicker(true)} title="Choose the date!" color={'#D98236'} />
       </View>
 
       {showDatePicker && (
