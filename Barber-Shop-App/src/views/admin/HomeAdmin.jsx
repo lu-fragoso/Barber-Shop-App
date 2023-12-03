@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, RefreshControl } from 'react-native';
 import { db } from '../../../firebaseConfig';
 import { collection,getDocs } from 'firebase/firestore';
+import { FlatList } from 'react-native-gesture-handler';
 
 export default HomeAdmin = ({navigation}) => {
   const [users,setUsers] = useState([])
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(()=>{
-    
-    async function listUsers(){
+  const fetchUsers = async () => {
+    const usersCollection = collection(db, 'barbers');
+    const usersSnapshot = await getDocs(usersCollection);
+    const usersList = usersSnapshot.docs.map(doc => doc.data());
+    setUsers(usersList);
+    setRefreshing(false);
+  };
 
-      try { 
-        const usersSnapshot = await getDocs(collection(db,'barbers'))
-        const usersData = usersSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
-        setUsers(usersData)
-      } catch (error) {
-        console.error('Error when searching for users', error.message)
-      }
-    }
-    listUsers()
-  },[])
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-
+  const onRefresh = () => {
+   setRefreshing(true);
+   fetchUsers();
+  };
   
   return (
     <View style={styles.container}>
@@ -35,20 +37,31 @@ export default HomeAdmin = ({navigation}) => {
         <Text style={styles.user}>Users</Text>
 
         <View style={styles.rectangle11}>
-          {users.map(usuario =>(
-            <View key={usuario.id} style={styles.viewuser}>
-              <Text 
-              style={styles.users}
-              onPress={()=>{
-                navigation.navigate('Details',{
-                  uid: usuario.uid,
-                  displayName: usuario.displayName
-                })
-              }}> 
-                {usuario.displayName} 
-              </Text> 
-            </View>
-        ))}
+          <FlatList
+            data={users}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.viewuser}>
+                <Text 
+                  style={styles.users}
+                  onPress={() => {
+                    navigation.navigate('Details', {
+                      uid: item.uid,
+                      displayName: item.displayName
+                    });
+                  }}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={onRefresh}
+                    />
+                  }
+                >
+                  {item.displayName}
+                </Text>
+              </View>
+            )}
+          />
         </View>
 
 
