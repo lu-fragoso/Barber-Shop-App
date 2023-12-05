@@ -189,13 +189,19 @@ export default Scheduling = ({navigation, route}) => {
      setSelected(null)
     navigation.goBack(); 
   };
+  const handleGoHome = () => {
+    setDate(null)
+    setSelectedTime(null)
+     setSelected(null)
+    navigation.navigate("HomeClient",{uid: uid}); 
+  };
 
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
         <Icon name="chevron-right" size={40} color='#F2DDB6'  />
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleVoltar} style={{...styles.vector2}} >
+      <TouchableOpacity onPress={handleGoHome} style={{...styles.vector2}} >
         <Icon name="home" size={40} color='#F2DDB6' />
       </TouchableOpacity>
       <Text style={styles.scheduling}>Scheduling</Text>
