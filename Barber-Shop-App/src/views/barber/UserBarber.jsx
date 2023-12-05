@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
 
 export default UserBarber = ({navigation, route}) => {
-  const { displayName } = route.params;
+  const { uid } = route.params;
   const [userData, setUserData] = useState(null)
+  const [newDisplayName, setNewDisplayName] = useState('');
   
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const q = query(collection(db, 'barbers'), where('displayName', '==', displayName));
+        const q = query(collection(db, 'barbers'), where('uid', '==', uid));
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           setUserData(userData);
         } else {
-          console.log('No documents found with displayName:', displayName);
+          console.log('No documents found with displayName:', uid);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -25,8 +26,38 @@ export default UserBarber = ({navigation, route}) => {
     };
   
     fetchUserData();
-  }, [displayName]);
+  }, [uid]);
 
+  useEffect(() => {
+    if (userData && userData.displayName) {
+      setNewDisplayName(userData.displayName);
+    }
+  }, [userData]);
+
+  const handleUpdateData = async () => {
+    if (typeof newDisplayName === 'string') {
+      const q = query(collection(db, 'barbers'), where('uid', '==', uid));
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        const userDoc = querySnapshot.docs[0];
+        const newUserData = {
+          displayName: newDisplayName
+        };
+  
+        try {
+          await updateDoc(userDoc.ref, newUserData);
+          Alert.alert('User document updated successfully');
+        } catch (error) {
+          console.error('Error updating user document:', error);
+        }
+      } else {
+        console.log('No documents found to update');
+      }
+    } else {
+      console.error('newDisplayName must be a string');
+    }
+  };
   
   const handleVoltar = () => {
     navigation.goBack(); 
@@ -36,15 +67,22 @@ export default UserBarber = ({navigation, route}) => {
     <View style={styles.container}>
       <View style={styles.rectangle}></View>
       <View style={styles.group}>
-        <View style={styles.rectangle8}></View>
-        <Text style={styles.title}>Full Name</Text>
-        <Text style={styles.fullName}>{userData?.displayName||'error'}</Text>
-      </View>
+          <Text style={styles.title}>Full Name</Text>
+          <TextInput
+            style={styles.rectangle8}
+            onChangeText={setNewDisplayName}
+            value={newDisplayName}
+          />
+        </View>
       <View style={styles.group2}>
         <View style={styles.rectangle8}></View>
         <Text style={styles.user}>E-mail</Text>
         <Text style={styles.email}>{userData?.email||'error'}</Text>
       </View>
+
+      <View style={{position: 'absolute', bottom: 30, width: '50%'}}> 
+        <Button title="Update" onPress={handleUpdateData} color={'#D98236'} />
+      </View> 
       
       <Icon name="user" size={80} color='#F2DDB6' style={{...styles.vector2}}/>
       
@@ -52,7 +90,7 @@ export default UserBarber = ({navigation, route}) => {
         <Icon name="chevron-right" size={40} color='#F2DDB6'  />
       </TouchableOpacity>
       
-      <TouchableOpacity onPress={handleVoltar} style={{...styles.vector3}} >
+      <TouchableOpacity onPress={()=> navigation.navigate('HomeBarber', {uid: uid})} style={{...styles.vector3}} >
         <Icon name="home" size={40} color='#F2DDB6' />
       </TouchableOpacity>
 
@@ -89,6 +127,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     position: 'absolute',
     top: 34,
+    fontSize: 20,
+    paddingLeft:15,
     left: 0,
   },
   title: {
