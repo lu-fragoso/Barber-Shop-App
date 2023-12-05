@@ -127,23 +127,10 @@ export default Scheduling = ({navigation, route}) => {
     console.log('Selected date:', date.toLocaleDateString());
     console.log('Selected time:', selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }));
     console.log('User:', userData.uid);
-    console.log(selected)
+    //console.log(barberUid)
     
     try {
       // Verifica se o horário já está agendado
-      const q = query(
-        collection(db, 'appointment'),
-        where("date", "==", date.toLocaleDateString()),
-        where("time", "==", selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })),
-        where("barber", "==", selected)
-      );
-      const querySnapshot = await getDocs(q);
-  
-      if (!querySnapshot.empty) {
-        Alert.alert('This time is already scheduled.', `This time has already been scheduled with ${selected}. Please choose another time.  `);
-        return;
-      }
-
       const barberQuery = query(
         collection(db, 'barbers'),
         where("displayName", "==", selected)
@@ -160,6 +147,20 @@ export default Scheduling = ({navigation, route}) => {
       const barberUid = barberData.uid;
 
       console.log(barberUid)
+
+      const q = query(
+        collection(db, 'appointment'),
+        where("date", "==", date.toLocaleDateString()),
+        where("time", "==", selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })),
+        where("barber", "==", barberData.uid)
+      );
+      const querySnapshot = await getDocs(q);
+  
+      if (!querySnapshot.empty) {
+        Alert.alert('This time is already scheduled.', `This time has already been scheduled with ${selected}. Please choose another time.  `);
+        return;
+      }
+
 
   
       const appointmentData = {
