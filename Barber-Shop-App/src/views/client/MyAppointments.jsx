@@ -54,7 +54,7 @@ export default MyAppointments =({ navigation, route }) => {
     fetchAppointments();
   }, [uid, selectedDate]);
 
-  const AppointmentItem = ({ item }) => {
+  const AppointmentItem = ({ item, onPress}) => {
     const [barberName, setBarberName] = useState('');
   
     useEffect(() => {
@@ -74,17 +74,13 @@ export default MyAppointments =({ navigation, route }) => {
     }, [item.barber]);
   
     return (
-      <View style={styles.viewuser}>
+    <TouchableOpacity onPress={onPress}>
+    <View style={styles.viewuser}>
         <Text style={styles.users}>
           {barberName} - {item.time} - {item.date}
         </Text>
-        <Text style={styles.appointmentText}>
-          
-        </Text>
-        <Text style={styles.appointmentText}>
-          
-        </Text>
-      </View>
+    </View>
+    </TouchableOpacity>
     );
   };
 
@@ -117,7 +113,7 @@ export default MyAppointments =({ navigation, route }) => {
                 <FlatList
                   data={appointments}
                   keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => <AppointmentItem item={item} />}
+                  renderItem={({ item }) => <AppointmentItem item={item} onPress={() => navigation.navigate('AppointmentDetails', { appointment: item })} />}
                 />
             </View>
         </View>
