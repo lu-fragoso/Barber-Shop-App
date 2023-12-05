@@ -81,12 +81,10 @@ export default ProfileClient = ({navigation, route}) => {
           <Text style={styles.email}>{userData?.email||'error'}</Text>
       </View>
       
-      <View style={{ alignItems: 'center', marginBottom: 30}}> 
-    <TouchableOpacity style={styles.button} onPress={handleUpdateData}>
-      <Text style={styles.buttonText}>Atualizar DisplayName</Text>
-    </TouchableOpacity>
-  </View> 
-      
+      <View style={{position: 'absolute', bottom: 30, width: '50%'}}> 
+        <Button title="Update" onPress={handleUpdateData} color={'#D98236'}/>
+      </View> 
+   
       <Icon name="user" size={80} color='#F2DDB6' style={{...styles.vector2}}/>
       
       <TouchableOpacity onPress={handleVoltar} style={{...styles.vector1}} >
