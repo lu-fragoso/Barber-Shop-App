@@ -7,7 +7,7 @@ import { db } from '../../../firebaseConfig';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default Scheduling = ({navigation, route}) => {
-  const { displayName } = route.params;
+  const { uid } = route.params;
   const [userData, setUserData] = useState(null);  
   const [barbes, setBarbers] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -19,13 +19,13 @@ export default Scheduling = ({navigation, route}) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const q = query(collection(db, 'users'), where('displayName', '==', displayName));
+        const q = query(collection(db, 'users'), where('uid', '==', uid));
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           setUserData(userData);
         } else {
-          console.log('No documents found with displayName:', displayName);
+          console.log('No documents found with uid:', uid);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -33,7 +33,7 @@ export default Scheduling = ({navigation, route}) => {
     };
   
     fetchUserData();
-  }, [displayName]);
+  }, [uid]);
 
   useEffect(()=>{
     async function getBarbers(){
@@ -126,7 +126,7 @@ export default Scheduling = ({navigation, route}) => {
 
     console.log('Selected date:', date.toLocaleDateString());
     console.log('Selected time:', selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }));
-    console.log('User:', userData.displayName);
+    console.log('User:', userData.uid);
     console.log(selected)
     
     try {
@@ -143,12 +143,30 @@ export default Scheduling = ({navigation, route}) => {
         Alert.alert('This time is already scheduled.', `This time has already been scheduled with ${selected}. Please choose another time.  `);
         return;
       }
+
+      const barberQuery = query(
+        collection(db, 'barbers'),
+        where("displayName", "==", selected)
+      );
+      const barberSnapshot = await getDocs(barberQuery);
+
+      if (barberSnapshot.empty) {
+        Alert.alert('Barber not found:', `No barber found with the name ${selected}.`);
+        return;
+      }
+
+      const barberDoc = barberSnapshot.docs[0];
+      const barberData = barberDoc.data();
+      const barberUid = barberData.uid;
+
+      console.log(barberUid)
+
   
       const appointmentData = {
         date: date.toLocaleDateString(),
         time: selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }),
-        barber: selected,
-        user: userData.displayName,
+        barber: barberUid,
+        user: userData.uid,
       };
 
       await addDoc(collection(db, 'appointment'), appointmentData)
