@@ -4,6 +4,7 @@ import RegisterBarber from './src/views/admin/RegisterBarber'
 import Details from './src/views/admin/Details';
 import RecoveryPassword from './src/views/public/RecoveryPassword';
 import MyAppointments from './src/views/client/MyAppointments';
+import AppointmentDetails from './src/views/client/AppointmentDetails';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -18,6 +19,7 @@ function MyStackNavigator() {
       <Stack.Screen name="ProfileClient" component={ProfileClient} options={{ headerShown: false }}/>
       <Stack.Screen name="Scheduling" component={Scheduling} options={{ headerShown: false }}/>
       <Stack.Screen name="MyAppointments" component={MyAppointments} options={{ headerShown: false }}/>
+      <Stack.Screen name="AppointmentDetails" component={AppointmentDetails} options={{ headerShown: false }}/>
       <Stack.Screen name="SingUpClient" component={SingUpClient} options={{ headerShown: false }}/>
       <Stack.Screen name="HomeBarber" component={HomeBarber} options={{ headerShown: false }}/>
       <Stack.Screen name="UserBarber" component={UserBarber} options={{ headerShown: false }}/>
