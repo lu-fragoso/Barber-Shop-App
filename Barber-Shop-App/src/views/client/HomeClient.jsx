@@ -8,7 +8,7 @@ import ProfileClient from '../client/ProfileClient'
 import Scheduling from '../client/Scheduling'
 
 export default HomeClient = ({navigation, route}) => {
-  const { email } = route.params;
+  const { uid } = route.params;
   const [userData, setUserData] = useState(null)
 
   //console.log(email)
@@ -16,13 +16,13 @@ export default HomeClient = ({navigation, route}) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const q = query(collection(db, 'users'), where('email', '==', email));
+        const q = query(collection(db, 'users'), where('uid', '==', uid));
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           setUserData(userData);
         } else {
-          console.log('No documents found with email:', email);
+          console.log('No documents found with uid:', uid);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -30,16 +30,16 @@ export default HomeClient = ({navigation, route}) => {
     };
   
     fetchUserData();
-  }, [email]);
+  }, [uid]);
 
 
   
   const navigateToProfileClient = () => {
-    navigation.navigate('ProfileClient',{displayName: userData.displayName});
+    navigation.navigate('ProfileClient',{uid: userData.uid});
   };
 
   const navigateToScheduling = () => {
-    navigation.navigate('Scheduling', {displayName: userData.displayName});
+    navigation.navigate('Scheduling', {uid: userData.uid});
   };
 
   const handleVoltar = () => {
@@ -63,8 +63,7 @@ export default HomeClient = ({navigation, route}) => {
       </View>
       
       <View style={styles.group11}>
-        <Text style={{...styles.welcomeText,top: 10}}>Welcome,</Text>
-        <Text style={{...styles.welcomeText,left: 100,fontSize: 32}}> {userData?.displayName.split(' ')[0]||'error'}!</Text>
+        <Text style={{...styles.welcomeText,top: 10, width: "100%",}}>Welcome, {userData?.displayName.split(' ')[0]||'error'}!</Text>
       </View>
       
       <View style={styles.group13}>
@@ -177,7 +176,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   welcomeText: {
-    width: 198,
     height: 52,
     color: '#F2DDB6',
     fontSize: 24,
@@ -185,7 +183,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 3,
     left: 0,
-    textAlign: 'center',
+    textAlign: "center"
   },
   client: {
     width: 198,
