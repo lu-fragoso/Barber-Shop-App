@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { FlatList } from 'react-native-gesture-handler';
@@ -24,10 +24,12 @@ function convertTo24Hour(time) {
   //console.log(`Converted ${time} to ${newTime}`);
   return newTime;
 }
+
 export default HomeBarber = ({navigation,route}) => {
-  const { email } = route.params;
+  const { uid } = route.params;
   const [userData, setUserData] = useState(null)
   const [appointments, setAppointments] = useState([]);
+
 
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -37,13 +39,13 @@ export default HomeBarber = ({navigation,route}) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const q = query(collection(db, 'barbers'), where('email', '==', email));
+        const q = query(collection(db, 'barbers'), where('uid', '==', uid));
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           setUserData(userData);
         } else {
-          console.log('No documents found with email:', email);
+          console.log('No documents found with uid:', uid);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -51,44 +53,73 @@ export default HomeBarber = ({navigation,route}) => {
     };
     
     fetchUserData();
-  }, [email]);
+  }, [uid]);
   
-  //console.log(userData.displayName)
+  //console.log(userData)
   const fetchAppointments = async () => {
-    const dateKey = date.toLocaleDateString();
-    const appointmentsRef = collection(db, 'appointment');
-    const q = query(appointmentsRef, where('barber', '==', userData.displayName));
-    const appointmentSnap = await getDocs(q);
+    if (userData) {
+      const dateKey = date.toLocaleDateString();
+      const appointmentsRef = collection(db, 'appointment');
+      const q = query(appointmentsRef, where('barber', '==', userData.uid));
+      const appointmentSnap = await getDocs(q);
+      
+      const appointmentsForDate = appointmentSnap.docs
+        .map(doc => doc.data())
+        .filter(appointment => appointment.date === dateKey);
     
-    const appointmentsForDate = appointmentSnap.docs
-      .map(doc => doc.data())
-      .filter(appointment => appointment.date === dateKey);
+      setAppointments(appointmentsForDate);
+    }
+  };
   
-    setAppointments(appointmentsForDate);
+  useEffect(() => {
+    fetchAppointments();
+  }, [date, userData]);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
+    setShowDatePicker(false);
   };
 
-useEffect(() => {
-  fetchAppointments();
-}, [date]);
+  const sortedAppointments = [...appointments].sort((a, b) => {
+    const timeA = convertTo24Hour(a.time);
+    const timeB = convertTo24Hour(b.time);
+    const [hoursA, minutesA] = timeA.split(':').map(Number);
+    const [hoursB, minutesB] = timeB.split(':').map(Number);
+    return hoursA - hoursB || minutesA - minutesB;
+  });
+  //console.log(sortedAppointments);
 
-const onChange = (event, selectedDate) => {
-  const currentDate = selectedDate || date;
-  setDate(currentDate);
-  setShowDatePicker(false);
-};
-
-const sortedAppointments = [...appointments].sort((a, b) => {
-  const timeA = convertTo24Hour(a.time);
-  const timeB = convertTo24Hour(b.time);
-  const [hoursA, minutesA] = timeA.split(':').map(Number);
-  const [hoursB, minutesB] = timeB.split(':').map(Number);
-  return hoursA - hoursB || minutesA - minutesB;
-});
-//console.log(sortedAppointments);
-
+  const AppointmentItem = ({ item }) => {
+    const [userName, setUserName] = useState('');
+  
+    useEffect(() => {
+      const fetchUserName = async () => {
+        const q = query(collection(db, 'users'), where('uid', '==', item.user));
+        const querySnapshot = await getDocs(q);
+  
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setUserName(userData.displayName);
+        } else {
+          setUserName(item.user);
+        }
+      };
+  
+      fetchUserName();
+    }, [item.user]);
+  
+    return (
+      <View style={styles.viewuser}> 
+        <Text style={styles.users}>
+          {userName} - {item.time}
+        </Text>
+      </View>  
+    );
+  };
 
   const navigateToUserBarber = () => {
-    navigation.navigate('UserBarber',{displayName: userData.displayName});
+    navigation.navigate('UserBarber',{uid: userData.uid});
   };
 
   const handleVoltar = () => {
@@ -100,8 +131,7 @@ const sortedAppointments = [...appointments].sort((a, b) => {
       <View style={styles.rectangle7}></View>
       
       <View style={styles.group11}>
-        <Text style={{...styles.welcomeText,top: 10}}>Welcome,</Text>
-        <Text style={{...styles.welcomeText,left: 100,fontSize: 32}}>{userData?.displayName.split(' ')[0]||'error'}!</Text>
+        <Text style={{...styles.welcomeText,top: 10, width: "100%",}}>Welcome, {userData?.displayName.split(' ')[0]||'error'}!</Text>
       </View>
       
       <Text style={styles.yourScheduledJobs}>Your scheduled jobs</Text>
@@ -114,14 +144,10 @@ const sortedAppointments = [...appointments].sort((a, b) => {
         
         <View style={styles.rectangle11}>
           <FlatList
-             data={sortedAppointments}
-             keyExtractor={(item) => item.time}
-             renderItem={({ item }) => (
-               <View style={styles.viewuser}> 
-               <Text style={styles.users}> {item.user} - {item.time}</Text>
-               </View>  
-               )}
-           />
+            data={sortedAppointments}
+            keyExtractor={(item) => item.time}
+            renderItem={({ item }) => <AppointmentItem item={item} />}
+          />
         </View>
        
       
