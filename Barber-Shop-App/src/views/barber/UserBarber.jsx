@@ -81,7 +81,7 @@ export default UserBarber = ({navigation, route}) => {
       </View>
 
       <View style={{position: 'absolute', bottom: 30, width: '50%'}}> 
-        <Button title="Atualizar DisplayName" onPress={handleUpdateData} />
+        <Button title="Update" onPress={handleUpdateData} color={'#D98236'} />
       </View> 
       
       <Icon name="user" size={80} color='#F2DDB6' style={{...styles.vector2}}/>
