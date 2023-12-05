@@ -30,13 +30,13 @@ export default Login = ({navigation}) => {
         const userSnapshot = await getDocs(userQuery);
   
         if (!userSnapshot.empty) {
-          navigation.navigate('HomeClient', {email: user.email});
+          navigation.navigate('HomeClient', {uid: user.uid});
         } else {
           const barberQuery = query(barbersRef, where("email", "==", user.email));
           const barberSnapshot = await getDocs(barberQuery);
   
           if (!barberSnapshot.empty) {
-            navigation.navigate('HomeBarber',{email: user.email});
+            navigation.navigate('HomeBarber',{uid: user.uid});
           } else {
             throw new Error("Email not found in any collection");
           }
