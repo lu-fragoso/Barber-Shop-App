@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../../firebaseConfig';
 
 import ProfileClient from '../client/ProfileClient'
 import Scheduling from '../client/Scheduling'
+import MyAppointments from '../client/MyAppointments'
 
 export default HomeClient = ({navigation, route}) => {
   const { uid } = route.params;
@@ -42,6 +43,10 @@ export default HomeClient = ({navigation, route}) => {
     navigation.navigate('Scheduling', {uid: userData.uid});
   };
 
+  const navigateToMyAppointments = () =>{
+    navigation.navigate('MyAppointments', {uid: userData.uid});
+  }
+
   const handleVoltar = () => {
     navigation.goBack(); 
   };
@@ -51,16 +56,24 @@ export default HomeClient = ({navigation, route}) => {
     <View style={styles.container}>
       
       <View style={styles.rectangle}/>
-      
-      <View style={styles.group4}>
-        <TouchableOpacity
-        style={styles.rectangle2}
-        onPress={navigateToScheduling}
-        >
-        <View style={styles.rectangle2}/>
-        <Text style={styles.scheduleText}>Schedule your appointment !</Text>
-        </TouchableOpacity>
+
+      <View style={{position: 'absolute', bottom: 30, width: '40%', right: 24}}> 
+        <Button 
+          title={"My Appointments"}
+          onPress={navigateToMyAppointments}
+          color={'#D98236'}
+        />
       </View>
+
+      <View style={{position: 'absolute', bottom: 30, width: '40%', left: 24}}> 
+        <Button
+          title={"Schedule your appointment!"}
+          onPress={navigateToScheduling}
+          color={'#D98236'}
+        />
+      </View>
+      
+      
       
       <View style={styles.group11}>
         <Text style={{...styles.welcomeText,top: 10, width: "100%",}}>Welcome, {userData?.displayName.split(' ')[0]||'error'}!</Text>
@@ -100,6 +113,21 @@ export default HomeClient = ({navigation, route}) => {
     </View>
   );
 }
+
+/*
+
+<View style={styles.group4}>
+        <TouchableOpacity
+        style={styles.rectangle2}
+        onPress={navigateToScheduling}
+        >
+        <View style={styles.rectangle2}/>
+        <Text style={styles.scheduleText}>Schedule your appointment !</Text>
+        </TouchableOpacity>
+      </View>
+
+
+*/
 
 const styles = StyleSheet.create({
   container: {
