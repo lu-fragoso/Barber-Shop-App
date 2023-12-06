@@ -14,24 +14,30 @@ export default HomeClient = ({navigation, route}) => {
 
   //console.log(email)
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const q = query(collection(db, 'users'), where('uid', '==', uid));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          const userData = querySnapshot.docs[0].data();
-          setUserData(userData);
-        } else {
-          console.log('No documents found with uid:', uid);
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+  const fetchUserData = async () => {
+    try {
+      const q = query(collection(db, 'users'), where('uid', '==', uid));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const userData = querySnapshot.docs[0].data();
+        setUserData(userData);
+      } else {
+        console.log('No documents found with uid:', uid);
       }
-    };
-  
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', fetchUserData);
+
+    // Chame a função fetchUserData para buscar os dados do usuário quando o componente é montado.
     fetchUserData();
-  }, [uid]);
+
+    // Retorne a função de limpeza para remover o listener quando o componente for desmontado.
+    return unsubscribe;
+  }, [uid, navigation]);
 
 
   

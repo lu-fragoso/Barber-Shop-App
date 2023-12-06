@@ -36,24 +36,26 @@ export default HomeBarber = ({navigation,route}) => {
 
   //console.log(email)
   
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const q = query(collection(db, 'barbers'), where('uid', '==', uid));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          const userData = querySnapshot.docs[0].data();
-          setUserData(userData);
-        } else {
-          console.log('No documents found with uid:', uid);
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
+  const fetchUserData = async () => {
+    try {
+      const q = query(collection(db, 'barbers'), where('uid', '==', uid));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const barberData = querySnapshot.docs[0].data();
+        setUserData(barberData);
+      } else {
+        console.log('No documents found with uid:', uid);
       }
-    };
-    
+    } catch (error) {
+      console.error('Error fetching barber data:', error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', fetchUserData);
     fetchUserData();
-  }, [uid]);
+    return unsubscribe;
+  }, [uid, navigation]);
   
   //console.log(userData)
   const fetchAppointments = async () => {

@@ -33,26 +33,28 @@ export default MyAppointments =({ navigation, route }) => {
 
   //console.log(selectedDate.toLocaleDateString())
 
+  const fetchAppointments = async () => {
+    let q;
+    if (selectedDate) {
+      q = query(collection(db, 'appointment'), where('user', '==', uid), where('date', '==', selectedDate.toLocaleDateString()));
+    } else {
+      q = query(collection(db, 'appointment'), where('user', '==', uid));
+    }
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const appointmentsData = querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id}));
+      setAppointments(appointmentsData);
+    } else {
+      console.log('No schedules found for the user:', uid);
+    }
+  };
+
   useEffect(() => {
-    const fetchAppointments = async () => {
-      let q;
-      if (selectedDate) {
-        q = query(collection(db, 'appointment'), where('user', '==', uid), where('date', '==', selectedDate.toLocaleDateString()));
-      } else {
-        q = query(collection(db, 'appointment'), where('user', '==', uid));
-      }
-      const querySnapshot = await getDocs(q);
-  
-      if (!querySnapshot.empty) {
-        const appointmentsData = querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id}));
-        setAppointments(appointmentsData);
-      } else {
-        console.log('Nenhum agendamento encontrado para o usuário:', uid);
-      }
-    };
-  
+    const unsubscribe = navigation.addListener('focus', fetchAppointments);
     fetchAppointments();
-  }, [uid, selectedDate]);
+    return unsubscribe;
+  }, [uid, selectedDate, navigation]);
 
   const AppointmentItem = ({ item, onPress}) => {
     const [barberName, setBarberName] = useState('');
