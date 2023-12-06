@@ -12,8 +12,23 @@ export default AppointmentDetails = ({navigation, route }) => {
   const [time, setTime] = useState(new Date(appointment.time));
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState('date');
+  const [canModifyAppointment, setCanModifyAppointment] = useState(true);
 
   //console.log(appointment.date)
+
+  useEffect(() => {
+    checkAppointmentDate();
+  }, []);
+
+  const checkAppointmentDate = () => {
+    const today = new Date();
+  
+    if (appointment.date <= today.toLocaleDateString()) {
+      setCanModifyAppointment(false);
+    } else {
+      setCanModifyAppointment(true);
+    }
+  };
 
   useEffect(() => {
     const fetchBarberName = async () => {
@@ -24,7 +39,7 @@ export default AppointmentDetails = ({navigation, route }) => {
           const userData = querySnapshot.docs[0].data();
         setBarberName(userData.displayName);
       } else {
-        console.log('Nenhum barbeiro encontrado com o uid:', appointment.barber);
+        console.log('No barber found with uid:', appointment.barber);
       }
     };
 
@@ -139,7 +154,7 @@ export default AppointmentDetails = ({navigation, route }) => {
         }
 
         await updateDoc(appointmentRef, appointmentData);
-        console.log('foi')
+        Alert.alert("Appointment updated successfully!");
       }
 
       } catch (error) {
@@ -167,7 +182,7 @@ export default AppointmentDetails = ({navigation, route }) => {
 
     try {
       await deleteDoc(appointmentRef);
-      console.log("Appointment successfully deleted!");
+      Alert.alert("Appointment successfully deleted!");
       navigation.goBack();       
     } catch (e) {
       console.error("Error removing appointment: ", e);
@@ -200,16 +215,20 @@ export default AppointmentDetails = ({navigation, route }) => {
         
         <View style={{ flexDirection: 'row', alignItems: 'center', top: 150 }}>
           <Text style={{...styles.subTitle,  position: 'relative'}}>Date: {date && !isNaN(date) ? date.toLocaleDateString() : appointment.date}</Text>
-          <TouchableOpacity onPress={showDatepicker} style={{ top:-13 }}>
-            <Icon name="pencil" size={30} color="#3F3939" />
-          </TouchableOpacity>
+          {canModifyAppointment && (
+            <TouchableOpacity onPress={showDatepicker} style={{ top:-13 }}>
+              <Icon name="pencil" size={30} color="#3F3939" />
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={{ flexDirection: 'row', alignItems: 'center', top: 110 }}>
           <Text style={{...styles.subTitle,  position: 'relative'}}>Time: {time && !isNaN(time) ? time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : appointment.time}</Text>
-          <TouchableOpacity onPress={showTimepicker} style={{ top:-13 }}>
-            <Icon name="pencil" size={30} color="#3F3939" />
-          </TouchableOpacity>
+          {canModifyAppointment && (
+            <TouchableOpacity onPress={showTimepicker} style={{ top:-13 }}>
+              <Icon name="pencil" size={30} color="#3F3939" />
+            </TouchableOpacity>
+          )}
         </View>
         
       </View>
@@ -222,24 +241,29 @@ export default AppointmentDetails = ({navigation, route }) => {
           is24Hour={false}
           display="default"
           onChange={onChange}
+          minimumDate={new Date()}
         />
       )}
 
-      <View style={{position: 'absolute', bottom: 30, width: '40%', right: 24}}> 
-        <Button 
-          title="Delete Appointment" 
-          onPress={deleteAppointment}
-          color={'red'} 
-        />
-      </View>
+      {canModifyAppointment && (
+        <View style={{position: 'absolute', bottom: 30, width: '40%', right: 24}}> 
+          <Button 
+            title="Delete Appointment" 
+            onPress={deleteAppointment}
+            color={'red'} 
+          />
+        </View>
+      )}
 
-      <View style={{position: 'absolute', bottom: 30, width: '40%', left: 24}}> 
-        <Button
-          title={"Update Appointment"}
-          onPress={updateAppointment}
-          color={'#D98236'}
-        />
-      </View>
+      {canModifyAppointment && (
+        <View style={{position: 'absolute', bottom: 30, width: '40%', left: 24}}> 
+          <Button
+            title={"Update Appointment"}
+            onPress={updateAppointment}
+            color={'#D98236'}
+          />
+        </View>
+      )}
 
       
     </View>
