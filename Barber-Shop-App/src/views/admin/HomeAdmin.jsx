@@ -52,15 +52,13 @@ export default HomeAdmin = ({navigation}) => {
             )}
           />
         </View>
-
-
-
-        
-  
+     
       </View>
+      
       <TouchableOpacity
       style={{...styles.button, right: 20,bottom: 30}}
       onPress={()=>navigation.navigate('RegisterBarber')}>
+       
         <View style={{...styles.button, backgroundColor: '#3F3939',}}/>
         <Text style={styles.addBarber}>Add Barber</Text>
 
