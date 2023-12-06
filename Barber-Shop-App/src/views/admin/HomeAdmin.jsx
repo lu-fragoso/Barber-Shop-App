@@ -1,30 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { db } from '../../../firebaseConfig';
 import { collection,getDocs } from 'firebase/firestore';
 import { FlatList } from 'react-native-gesture-handler';
 
 export default HomeAdmin = ({navigation}) => {
   const [users,setUsers] = useState([])
-  const [refreshing, setRefreshing] = useState(false);
-
+  
   const fetchUsers = async () => {
     const usersCollection = collection(db, 'barbers');
     const usersSnapshot = await getDocs(usersCollection);
     const usersList = usersSnapshot.docs.map(doc => doc.data());
     setUsers(usersList);
-    setRefreshing(false);
   };
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', fetchUsers);
     fetchUsers();
-  }, []);
+    return unsubscribe;
+  }, [navigation]);
 
-  const onRefresh = () => {
-   setRefreshing(true);
-   fetchUsers();
-  };
-  
   return (
     <View style={styles.container}>
       <View style={styles.rectangle7}></View>
@@ -50,12 +45,6 @@ export default HomeAdmin = ({navigation}) => {
                       displayName: item.displayName
                     });
                   }}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={onRefresh}
-                    />
-                  }
                 >
                   {item.displayName}
                 </Text>
