@@ -107,7 +107,7 @@ export default AppointmentDetails = ({navigation, route }) => {
 
   const updateAppointmentConfirmed = async () => {
     try {
-      console.log(appointment.barber)
+      //console.log(appointment.barber)
 
       let q = null
       
@@ -129,7 +129,7 @@ export default AppointmentDetails = ({navigation, route }) => {
       }
       
         const querySnapshot = await getDocs(q);
-        console.log(querySnapshot)
+        //console.log(querySnapshot)
         
         if (!querySnapshot.empty) {
           Alert.alert('This time is already scheduled.', `This time has already been scheduled with ${barberName}. Please choose another time.  `);
